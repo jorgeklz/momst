@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   getting-started: getting-started.html
   momst-variants: momst-variants.html
-last_built: 2026-06-02T16:00Z
+last_built: 2026-06-02T20:28Z
 urls:
   reference: https://jorgeklz.github.io/momst/reference
   article: https://jorgeklz.github.io/momst/articles
