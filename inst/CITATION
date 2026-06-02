@@ -1,0 +1,38 @@
+citHeader("To cite the 'momst' package in publications use:")
+
+bibentry(
+  bibtype = "InProceedings",
+  title   = "Using local search strategies to improve the performance of {NSGA-II} for the Multi-Criteria Minimum Spanning Tree problem",
+  author  = c(
+    person("Jorge",    "Parraga-Alava"),
+    person("Mario",    "Inostroza-Ponta"),
+    person("Marcio",   "Dorn")
+  ),
+  booktitle = "2017 IEEE Congress on Evolutionary Computation (CEC)",
+  year      = "2017",
+  pages     = "1818--1825",
+  publisher = "IEEE",
+  doi       = "10.1109/CEC.2017.7969432",
+  textVersion = paste0(
+    "Parraga-Alava, J., Inostroza-Ponta, M., & Dorn, M. (2017). ",
+    "Using local search strategies to improve the performance of NSGA-II ",
+    "for the Multi-Criteria Minimum Spanning Tree problem. ",
+    "In 2017 IEEE Congress on Evolutionary Computation (CEC) (pp. 1818-1825). ",
+    "IEEE. doi:10.1109/CEC.2017.7969432"
+  )
+)
+
+bibentry(
+  bibtype = "Manual",
+  title   = "momst: Multi-Objective Minimum Spanning Tree via NSGA-II with Local Search",
+  author  = person("Jorge A.", "Parraga-Alava"),
+  year    = format(Sys.Date(), "%Y"),
+  note    = paste("R package version", meta$Version),
+  url     = "https://github.com/jorgeklz/momst",
+  textVersion = paste0(
+    "Parraga-Alava, J. (", format(Sys.Date(), "%Y"),
+    "). momst: Multi-Objective Minimum Spanning Tree via NSGA-II with Local Search. ",
+    "R package version ", meta$Version, ". ",
+    "https://github.com/jorgeklz/momst"
+  )
+)

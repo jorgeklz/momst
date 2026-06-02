@@ -1,0 +1,53 @@
+url: https://jorgeklz.github.io/momst/
+
+template:
+  bootstrap: 5
+  bootswatch: cosmo
+
+reference:
+  - title: "Main solver"
+    desc: "Single entry point to run the NSGA-II based MO-MST solver."
+    contents:
+      - run_momst
+
+  - title: "Instance and lookup"
+    desc: "Generate random complete-graph instances and pre-compute edge-weight lookup tables."
+    contents:
+      - generate_instance
+      - build_weight_lookup
+
+  - title: "Prufer encoding"
+    desc: "Tree encoding helpers used internally by the genetic operators."
+    contents:
+      - decode_prufer
+      - generate_prufer_population
+
+  - title: "NSGA-II operators"
+    desc: "Objective evaluation, ranking, and the standard NSGA-II operators."
+    contents:
+      - compute_objectives
+      - non_dominated_crowding
+      - tournament_selection
+      - uniform_crossover
+      - random_mutation
+
+  - title: "Local search operators"
+    desc: "Three local search strategies and the dispatcher used by run_momst()."
+    contents:
+      - apply_local_search
+      - path_relinking
+      - pareto_local_search
+      - tabu_search
+
+  - title: "Plotting"
+    desc: "Convenience plots for the Pareto front and the best compromise tree."
+    contents:
+      - plot_pareto_front
+      - plot_best_tree
+
+articles:
+  - title: "Vignettes"
+    navbar: ~
+    contents:
+      - getting-started
+      - momst-variants

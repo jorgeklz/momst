@@ -1,0 +1,305 @@
+---
+title: "Getting Started with momst"
+author: "Jorge A. Parraga-Alava"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+    fig_width: 7
+    fig_height: 5
+vignette: >
+  %\VignetteIndexEntry{Getting Started with momst}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+# Global chunk options. Each example must be reproducible, so a fixed
+# random seed is set at every code block that involves stochastic steps.
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  fig.align = "center",
+  warning   = FALSE,
+  message   = FALSE
+)
+```
+
+# Overview
+
+The **momst** package solves the *Multi-Objective Minimum Spanning Tree*
+(MO-MST) problem on complete weighted graphs. Given a graph where every edge
+carries two or three independent costs (for example: distance, time, and
+risk), the goal is to obtain the **Pareto front** of spanning trees that no
+other tree dominates in all objectives simultaneously.
+
+The solver is built around the **NSGA-II** algorithm (Non-dominated Sorting
+Genetic Algorithm II) and uses **Prufer sequences** as the chromosome
+representation. By Cayley's theorem, every integer vector of length
+`n - 2` with values in `{1, ..., n}` decodes to a unique spanning tree of
+`n` nodes, so the representation is closed under random sampling, crossover,
+and mutation. This avoids the need for any repair operator.
+
+The package exposes four solver variants that differ in the local search
+operator applied after each generation:
+
+| Variant   | Local search                            |
+|:----------|:----------------------------------------|
+| `"base"`  | None (pure NSGA-II)                     |
+| `"PR"`    | Path Relinking                          |
+| `"PLS"`   | Pareto Local Search                     |
+| `"TS"`    | Tabu Search                             |
+
+This vignette shows the minimal workflow:
+
+1. Generate a random instance.
+2. Run `run_momst()` with a chosen variant.
+3. Inspect the population, the per-iteration Pareto fronts, and the global
+   Pareto front.
+4. Visualise the global Pareto front and the best-compromise spanning tree.
+
+A companion vignette (`vignette("momst-variants", package = "momst")`)
+compares the four variants side by side.
+
+## Reference
+
+This package is the reference implementation of the method described in:
+
+> Parraga-Alava, J., Inostroza-Ponta, M., and Dorn, M. (2017).
+> "Using local search strategies to improve the performance of NSGA-II
+> for the Multi-Criteria Minimum Spanning Tree problem".
+> In *2017 IEEE Congress on Evolutionary Computation (CEC)*,
+> pages 1818 to 1825. IEEE.
+> [doi:10.1109/CEC.2017.7969432](https://doi.org/10.1109/CEC.2017.7969432)
+
+To get the citation entry from within R:
+
+```{r citation, eval = FALSE}
+citation("momst")
+```
+
+# Installation
+
+You can install the development version of the package directly from GitHub:
+
+```{r install, eval = FALSE}
+# install.packages("remotes")
+remotes::install_github("jorgeklz/momst", build_vignettes = TRUE)
+```
+
+```{r load}
+library(momst)
+```
+
+# A first end-to-end example
+
+## Step 1. Generate a random bi-objective instance
+
+`generate_instance()` returns an edge list of a complete graph with random
+uniform weights for every objective. The `seed` argument makes the instance
+fully reproducible without polluting the global random number generator.
+
+```{r instance}
+# Number of nodes and number of objectives
+n_nodes   <- 10
+n_obj     <- 2
+
+# Generate a complete graph with two independent weights per edge
+inst <- generate_instance(
+  n        = n_nodes,
+  num_obj  = n_obj,
+  range_a  = c(10, 100),   # weight range for objective 1
+  range_b  = c(10,  50),   # weight range for objective 2
+  seed     = 12345
+)
+
+# The instance has n*(n-1)/2 edges
+nrow(inst)
+
+# First six edges of the complete graph
+head(inst)
+```
+
+For performance, the package converts the edge list into one `n x n` lookup
+matrix per objective so that the cost of any edge `(i, j)` can be retrieved
+in constant time:
+
+```{r lookup}
+lk <- build_weight_lookup(inst, n_nodes, n_obj)
+
+# Each element is a symmetric weight matrix
+str(lk, max.level = 1)
+
+# Weight of edge (1, 2) in objective 1
+lk[[1]][1, 2]
+```
+
+## Step 2. Run the NSGA-II solver (base variant)
+
+`run_momst()` is the main entry point. It performs:
+
+1. `iterations` independent runs of NSGA-II (useful to average results).
+2. Inside each run, up to `max_generations` evolutionary cycles.
+3. After every cycle, a local search operator is applied to the current
+   non-dominated set (none for `"base"`).
+4. A global Pareto front is assembled from the final population of each
+   independent run.
+
+For a first contact we use the simplest variant, `"base"`. A small instance
+and short runs are enough to illustrate the workflow.
+
+```{r run-base}
+res_base <- run_momst(
+  instance        = inst,
+  n               = n_nodes,
+  num_obj         = n_obj,
+  variant         = "base",      # pure NSGA-II
+  iterations      = 3,           # three independent runs
+  pop_size        = 30,          # must be even
+  tour_size       = 2,           # binary tournament selection
+  cross_rate      = 0.80,        # crossover probability
+  mut_rate        = 0.10,        # per-individual mutation probability
+  max_generations = 40,          # generations per run
+  convergence_window = 8,        # early stopping window
+  verbose         = FALSE,
+  seed            = 2026
+)
+```
+
+The function returns a list with everything needed to analyse the results:
+
+```{r structure}
+names(res_base)
+```
+
+* `instance`        : the edge list used.
+* `lookup`          : the per-objective weight matrices.
+* `iterations`      : the final populations of every independent run.
+* `pareto_per_iter` : the Pareto front of every independent run.
+* `global_pareto`   : the **non-dominated union** of all those fronts.
+* `elapsed`         : wall-clock time in seconds.
+
+## Step 3. Inspect the global Pareto front
+
+Each row of `global_pareto` is a candidate spanning tree. The first
+`n - 2` columns are the Prufer sequence (the chromosome), and the columns
+`objective_1`, `objective_2` (and optionally `objective_3`) report the
+**total cost of the tree in each objective**.
+
+```{r front-base}
+# Number of non-dominated trees
+nrow(res_base$global_pareto)
+
+# Show the chromosomes and their objective values
+res_base$global_pareto
+```
+
+We can sort the front by objective 1 to see the typical trade-off
+between objectives:
+
+```{r front-sorted}
+front <- res_base$global_pareto[order(res_base$global_pareto$objective_1), ]
+front[, c("objective_1", "objective_2")]
+```
+
+The "extreme" solutions of the front are the trees that minimise each
+objective in isolation:
+
+```{r extremes}
+# Best tree for objective 1
+front[which.min(front$objective_1), c("objective_1", "objective_2")]
+
+# Best tree for objective 2
+front[which.min(front$objective_2), c("objective_1", "objective_2")]
+```
+
+## Step 4. Plot the Pareto front
+
+`plot_pareto_front()` produces a base-graphics scatter of the
+non-dominated set. The dashed line connects consecutive points after
+sorting by the first objective, which makes the trade-off easy to read.
+
+```{r plot-front-base, fig.cap = "Global Pareto front returned by the base variant."}
+plot_pareto_front(res_base)
+```
+
+## Step 5. Decode and plot the best-compromise tree
+
+The "best-compromise" tree is the one that minimises the sum of all
+objectives. The helper `plot_best_tree()` decodes its Prufer chromosome,
+turns it into an `igraph` object, and labels each edge with its cost
+in every objective.
+
+The `igraph` package is only needed for this plot; the rest of the
+package does not depend on it.
+
+```{r best-tree, fig.cap = "Best-compromise spanning tree of the base variant.", fig.width = 6, fig.height = 6}
+if (requireNamespace("igraph", quietly = TRUE)) {
+  plot_best_tree(res_base, n = n_nodes)
+} else {
+  message("Install 'igraph' to plot the spanning tree.")
+}
+```
+
+# Working with three objectives
+
+The same workflow extends seamlessly to three-objective problems. Just
+set `num_obj = 3` and supply a third weight range `range_c`. The Pareto
+front then lives in a three-dimensional objective space.
+
+```{r run-3obj}
+res_3obj <- run_momst(
+  n               = 8,
+  num_obj         = 3,
+  variant         = "base",
+  iterations      = 2,
+  pop_size        = 30,
+  max_generations = 25,
+  range_a         = c(10, 100),
+  range_b         = c(10,  50),
+  range_c         = c(30, 200),
+  verbose         = FALSE,
+  seed            = 7
+)
+
+# Three-objective non-dominated set
+head(res_3obj$global_pareto[, c("objective_1", "objective_2", "objective_3")])
+```
+
+A simple way to inspect the three-objective front without extra
+dependencies is a pairs plot:
+
+```{r pairs-plot, fig.cap = "Pairwise projections of the three-objective Pareto front.", fig.width = 6, fig.height = 6}
+front3 <- res_3obj$global_pareto[, c("objective_1", "objective_2", "objective_3")]
+pairs(front3, pch = 19, col = "steelblue")
+```
+
+# Reproducibility
+
+Every stochastic step inside `run_momst()` is controlled by the `seed`
+argument. Two calls with the same arguments and the same seed return
+identical results:
+
+```{r reproducibility}
+a <- run_momst(n = 8, num_obj = 2, variant = "base",
+               iterations = 1, pop_size = 20, max_generations = 15,
+               verbose = FALSE, seed = 99)
+
+b <- run_momst(n = 8, num_obj = 2, variant = "base",
+               iterations = 1, pop_size = 20, max_generations = 15,
+               verbose = FALSE, seed = 99)
+
+identical(a$global_pareto, b$global_pareto)
+```
+
+# Where to go next
+
+* `vignette("momst-variants", package = "momst")` runs the four solver
+  variants on the same instance and compares their Pareto fronts both
+  numerically and visually.
+* `?run_momst` documents every argument of the main solver.
+* `?plot_pareto_front` and `?plot_best_tree` document the plotting
+  helpers.
+* `?apply_local_search` documents the dispatcher used internally to
+  call the local search operator selected by the `variant` argument.
