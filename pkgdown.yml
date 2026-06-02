@@ -1,0 +1,10 @@
+pandoc: 3.8.3
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  getting-started: getting-started.html
+  momst-variants: momst-variants.html
+last_built: 2026-06-02T15:58Z
+urls:
+  reference: https://jorgeklz.github.io/momst/reference
+  article: https://jorgeklz.github.io/momst/articles
