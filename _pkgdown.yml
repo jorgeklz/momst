@@ -5,6 +5,11 @@ template:
   bootswatch: cosmo
 
 reference:
+  - title: "Package overview"
+    desc: "Welcome page and pointers to the rest of the documentation."
+    contents:
+      - momst-package
+
   - title: "Main solver"
     desc: "Single entry point to run the NSGA-II based MO-MST solver."
     contents:

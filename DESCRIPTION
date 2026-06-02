@@ -21,7 +21,7 @@ Description: Solves the Multi-Criteria Minimum Spanning Tree (mc-MST) problem
     described in Parraga-Alava, Inostroza-Ponta and Dorn (2017)
     <doi:10.1109/CEC.2017.7969432>.
 License: GPL (>= 3)
-URL: https://github.com/jorgeklz/momst
+URL: https://github.com/jorgeklz/momst, https://jorgeklz.github.io/momst/
 BugReports: https://github.com/jorgeklz/momst/issues
 Encoding: UTF-8
 LazyData: true
