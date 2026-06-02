@@ -50,7 +50,7 @@ res <- run_momst(
 )
 
 # Inspect the global Pareto front
-head(res$global_pareto[, c("objetivo_1", "objetivo_2")])
+head(res$global_pareto[, c("objective_1", "objective_2")])
 
 # Plot it
 plot_pareto_front(res)
