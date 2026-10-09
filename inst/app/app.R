@@ -204,7 +204,7 @@ ui <- page_sidebar(
   sidebar = sidebar(
     width = 300, bg = "#ffffff", fg = "#17220f",
     div(class = "sidebar-logo",
-        tags$img(src = "utm-logo.png", alt = "Technical University of Manabi logo"),
+        tags$img(src = "jpa-logo-white.svg", alt = "Jorge Parraga-Alava logo"),
         tags$h1("momst explorer"),
         tags$p("Multi-objective minimum spanning tree")),
     div(class = "seccion-nav", "Parameters"),
@@ -262,9 +262,9 @@ ui <- page_sidebar(
     tags$link(rel = "preconnect", href = "https://fonts.googleapis.com"),
     tags$link(rel = "preconnect", href = "https://fonts.gstatic.com", crossorigin = NA),
     tags$link(rel = "stylesheet",
-              href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"),
+              href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap"),
     tags$link(rel = "stylesheet", href = "utm.css"),
-    tags$link(rel = "icon", href = "utm-logo.png")
+    tags$link(rel = "icon", type = "image/svg+xml", href = "jpa-favicon.svg")
   ),
   div(class = "franja-utm"),
   div(class = "encabezado",
