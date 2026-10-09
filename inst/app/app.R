@@ -8,8 +8,11 @@
 library(shiny)
 library(bslib)
 
+# system.file() is used instead of requireNamespace(): under shinylive,
+# requireNamespace() tries to install a missing package from the webR
+# repository and does not return FALSE, which stops the app from starting.
 pkg_name <- "momst"
-if (requireNamespace(pkg_name, quietly = TRUE)) {
+if (nzchar(system.file(package = pkg_name))) {
   if (!paste0("package:", pkg_name) %in% search()) attachNamespace(pkg_name)
 } else {
   src_dir <- if (dir.exists("momst_src")) "momst_src" else file.path("..", "..", "R")
