@@ -7,6 +7,8 @@
 * The same app is published as a static shinylive page (R running in the
   browser through webR) at <https://jorgeklz.github.io/momst/app/>, built by
   the pkgdown workflow.
+* The app follows the Universidad Técnica de Manabí visual identity: green and
+  gold palette, Inter and Playfair Display typography and the UTM logo.
 
 # momst 0.1.1
 

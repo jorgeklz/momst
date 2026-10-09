@@ -24,7 +24,19 @@ variant_labels <- c(
   "NSGA-II + Pareto LS"       = "PLS",
   "NSGA-II + Tabu Search"     = "TS"
 )
-variant_colors <- c(base = "#4269d0", PR = "#ef8a62", PLS = "#3ca951", TS = "#a463f2")
+# UTM green and gold lead the categorical order; the four hues pass the
+# colour-vision checks, and each variant also has its own marker shape.
+variant_colors <- c(base = "#2e8a1f", PR = "#c99a06", PLS = "#3a6fc4", TS = "#9b4f96")
+variant_pch    <- c(base = 19, PR = 17, PLS = 15, TS = 18)
+
+ink <- list(text = "#17220f", text2 = "#55604a", text3 = "#98a18d",
+            border = "#e1e5db", surface2 = "#f0f2ec", g1 = "#1e6b14", g6 = "#e2f2da")
+
+chart_par <- function(mar = c(4.2, 4.6, 1, 1)) {
+  graphics::par(mar = mar, family = "sans", col.axis = ink$text2, col.lab = ink$text2,
+                fg = ink$text3, cex.axis = 0.85, cex.lab = 0.95, las = 1, tcl = -0.25,
+                mgp = c(2.8, 0.6, 0))
+}
 
 # ---------------------------------------------------------------- helpers ---
 
@@ -99,17 +111,17 @@ tree_layout <- function(edges, n) {
   cbind(x = x, y = y)
 }
 
-plot_tree <- function(chr, n, lookup, title, show_weights = TRUE) {
+plot_tree <- function(chr, n, lookup, show_weights = TRUE) {
   edges <- decode_prufer(as.integer(chr), n)
   xy <- tree_layout(edges, n)
-  op <- graphics::par(mar = c(0.5, 0.5, 2.5, 0.5))
+  op <- graphics::par(mar = c(0.5, 0.5, 0.5, 0.5), family = "sans")
   on.exit(graphics::par(op))
-  plot(xy, type = "n", axes = FALSE, xlab = "", ylab = "", main = title,
+  plot(xy, type = "n", axes = FALSE, xlab = "", ylab = "",
        xlim = range(xy[, 1L]) + c(-0.6, 0.6),
        ylim = range(xy[, 2L]) + c(-0.5, 0.5))
   graphics::segments(xy[edges[, 1L], 1L], xy[edges[, 1L], 2L],
                      xy[edges[, 2L], 1L], xy[edges[, 2L], 2L],
-                     col = "gray45", lwd = 2)
+                     col = ink$text3, lwd = 2)
   if (show_weights) {
     lab <- vapply(seq_len(nrow(edges)), function(e) {
       paste(vapply(lookup, function(L) format(round(L[edges[e, 1L], edges[e, 2L]], 1L)),
@@ -125,49 +137,77 @@ plot_tree <- function(chr, n, lookup, title, show_weights = TRUE) {
     w <- graphics::strwidth(lab, cex = lcex) * 0.55
     h <- graphics::strheight(lab, cex = lcex) * 0.8
     graphics::rect(mx - w, my - h, mx + w, my + h, col = "white", border = NA)
-    graphics::text(mx, my, lab, cex = lcex, col = "gray20")
+    graphics::text(mx, my, lab, cex = lcex, col = ink$text2)
   }
   cex <- if (n <= 20L) 3.2 else if (n <= 40L) 2.4 else 1.8
-  graphics::points(xy, pch = 21, bg = "#cfe0ff", col = "#2f4b8f", cex = cex, lwd = 1.5)
-  graphics::text(xy, labels = seq_len(n), cex = if (n <= 40L) 0.8 else 0.6)
+  graphics::points(xy, pch = 21, bg = ink$g6, col = ink$g1, cex = cex, lwd = 1.6)
+  graphics::text(xy, labels = seq_len(n), cex = if (n <= 40L) 0.8 else 0.6, col = ink$text, font = 2)
   invisible(edges)
 }
 
-plot_fronts <- function(runs, num_obj, highlight = NULL) {
+plot_fronts <- function(runs, num_obj) {
   fronts <- lapply(runs, function(r) front_objectives(r$global_pareto))
   all_obj <- do.call(rbind, fronts)
+  v <- names(fronts)
   if (num_obj == 2L) {
-    plot(all_obj[, 1L], all_obj[, 2L], type = "n",
-         xlab = "Objective 1", ylab = "Objective 2", main = "Pareto front")
-    graphics::grid(col = "gray88")
-    for (v in names(fronts)) {
-      f <- fronts[[v]][order(fronts[[v]][, 1L]), , drop = FALSE]
-      graphics::lines(f[, 1L], f[, 2L], type = "s", col = variant_colors[[v]], lty = 2)
-      graphics::points(f[, 1L], f[, 2L], pch = 19, col = variant_colors[[v]])
+    op <- chart_par(); on.exit(graphics::par(op))
+    plot(all_obj[, 1L], all_obj[, 2L], type = "n", bty = "n",
+         xlab = "Objective 1", ylab = "Objective 2")
+    graphics::abline(h = pretty(all_obj[, 2L]), v = pretty(all_obj[, 1L]), col = ink$surface2)
+    graphics::box(bty = "l", col = ink$border)
+    for (k in v) {
+      f <- fronts[[k]][order(fronts[[k]][, 1L]), , drop = FALSE]
+      graphics::lines(f[, 1L], f[, 2L], type = "s", col = variant_colors[[k]], lwd = 1.5)
+      graphics::points(f[, 1L], f[, 2L], pch = variant_pch[[k]], col = "white", cex = 1.55)
+      graphics::points(f[, 1L], f[, 2L], pch = variant_pch[[k]], col = variant_colors[[k]], cex = 1.1)
     }
-    if (!is.null(highlight)) {
-      graphics::points(highlight[1L], highlight[2L], pch = 1, cex = 2.6, lwd = 2.5)
-    }
-    graphics::legend("topright", legend = names(fronts), col = variant_colors[names(fronts)],
-                     pch = 19, bty = "n")
+    graphics::legend("topright", legend = v, col = variant_colors[v], pch = variant_pch[v],
+                     lwd = 1.5, bty = "n", text.col = ink$text2, cex = 0.9, inset = 0.01)
   } else {
-    grp <- rep(names(fronts), vapply(fronts, nrow, integer(1L)))
-    graphics::pairs(all_obj, labels = paste("Objective", 1:3), pch = 19,
-                    col = variant_colors[grp], main = "Pareto front (pairwise projections)",
-                    oma = c(3, 3, 5, 12))
+    grp <- rep(v, vapply(fronts, nrow, integer(1L)))
+    op <- graphics::par(family = "sans", col.axis = ink$text2, fg = ink$text3)
+    on.exit(graphics::par(op))
+    graphics::pairs(all_obj, labels = paste("Objective", 1:3), pch = variant_pch[grp],
+                    col = variant_colors[grp], cex = 0.9, gap = 0.6, cex.labels = 1.2,
+                    oma = c(3, 3, 2, 11))
     graphics::par(xpd = NA)
-    graphics::legend("right", legend = names(fronts), col = variant_colors[names(fronts)],
-                     pch = 19, bty = "n")
+    graphics::legend("right", legend = v, col = variant_colors[v], pch = variant_pch[v],
+                     bty = "n", text.col = ink$text2)
   }
 }
+
+kpi <- function(label, value, unit = NULL, note = NULL, color = NULL, class = NULL) {
+  div(class = paste("tarjeta", class),
+      div(class = "kpi-valor", value, if (!is.null(unit)) tags$small(unit)),
+      div(class = "kpi-etiqueta",
+          if (!is.null(color)) span(class = "punto", style = paste0("background:", color)),
+          label),
+      if (!is.null(note)) div(class = "kpi-nota", note))
+}
+
+empty_state <- function(title, text) div(class = "vacio", tags$strong(title), text)
 
 # --------------------------------------------------------------------- UI ---
 
 ui <- page_sidebar(
-  title = "momst · Multi-Objective Minimum Spanning Tree",
-  theme = bs_theme(version = 5, bootswatch = "cosmo"),
+  window_title = "momst · Universidad Técnica de Manabí",
+  fillable = FALSE,
+  theme = bs_theme(
+    version = 5,
+    bg = "#f7f8f5", fg = "#17220f",
+    primary = "#1e6b14", secondary = "#55604a", success = "#2e8a1f",
+    info = "#2e8a1f", warning = "#d4a80a", danger = "#b3261e",
+    base_font = "'Inter', system-ui, sans-serif",
+    heading_font = "'Inter', system-ui, sans-serif",
+    "font-size-base" = "0.875rem", "border-radius" = "8px"
+  ),
   sidebar = sidebar(
-    width = 330,
+    width = 300, bg = "#ffffff", fg = "#17220f",
+    div(class = "sidebar-logo",
+        tags$img(src = "utm-logo.png", alt = "Universidad Técnica de Manabí"),
+        tags$h1("momst explorer"),
+        tags$p("Multi-objective minimum spanning tree")),
+    div(class = "seccion-nav", "Parameters"),
     accordion(
       open = c("Instance", "Solver"),
       accordion_panel(
@@ -200,69 +240,100 @@ ui <- page_sidebar(
         numericInput("seed", "Solver seed", 2026, step = 1)
       ),
       accordion_panel(
-        "NSGA-II parameters",
+        "NSGA-II",
         sliderInput("cross_rate", "Crossover rate", 0, 1, 0.80, step = 0.05),
         sliderInput("mut_rate", "Mutation rate", 0, 1, 0.05, step = 0.01),
         numericInput("tour_size", "Tournament size", 2, min = 2, max = 10, step = 1),
         numericInput("convergence_window", "Convergence window", 10, min = 2, max = 100, step = 1)
       )
     ),
-    actionButton("run", "Run solver", icon = icon("play"),
-                 class = "btn-primary w-100"),
-    helpText("Larger graphs and the local search variants take longer,",
-             "especially when the app runs inside the browser.")
+    div(class = "sidebar-acciones",
+        actionButton("run", "Run solver", icon = icon("play"), class = "btn-primary w-100"),
+        div(class = "aviso",
+            "Larger graphs and the local search variants take longer,",
+            "especially when the app runs inside the browser.")),
+    div(class = "sidebar-pie",
+        "Parraga-Alava, Inostroza-Ponta and Dorn (2017). IEEE CEC, pp. 1818 to 1825.",
+        tags$br(),
+        tags$a(href = "https://github.com/jorgeklz/momst", target = "_blank", "github.com/jorgeklz/momst"))
   ),
-  navset_card_tab(
+  tags$head(
+    tags$link(rel = "preconnect", href = "https://fonts.googleapis.com"),
+    tags$link(rel = "preconnect", href = "https://fonts.gstatic.com", crossorigin = NA),
+    tags$link(rel = "stylesheet",
+              href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"),
+    tags$link(rel = "stylesheet", href = "utm.css"),
+    tags$link(rel = "icon", href = "utm-logo.png")
+  ),
+  div(class = "franja-utm"),
+  div(class = "encabezado",
+      tags$h2(class = "titulo-pagina", "Multi-Objective Minimum Spanning Tree"),
+      tags$p(class = "subtitulo-pagina",
+             "NSGA-II with Prufer encoding and optional Pareto local search on complete",
+             "weighted graphs. Every run calls ", tags$code("momst::run_momst()"), ".")),
+  uiOutput("kpis"),
+  navset_card_underline(
     id = "tabs",
     nav_panel(
       "Pareto front",
-      uiOutput("summary_boxes"),
+      div(class = "titulo-tarjeta", "Global Pareto front by variant"),
+      uiOutput("front_empty"),
       plotOutput("front_plot", height = "460px")
     ),
     nav_panel(
       "Spanning tree",
       layout_columns(
-        col_widths = c(4, 8),
-        card(
+        col_widths = breakpoints(sm = 12, lg = c(4, 8)),
+        div(
+          div(class = "titulo-tarjeta", "Solution"),
           selectInput("tree_variant", "Variant", choices = NULL),
-          radioButtons("tree_pick", "Solution", inline = FALSE,
+          radioButtons("tree_pick", NULL,
                        c("Best compromise (min. sum)" = "sum",
                          "Best compromise (min. normalised sum)" = "norm",
                          "Choose by row" = "row")),
           conditionalPanel("input.tree_pick == 'row'",
                            numericInput("tree_row", "Row of the Pareto table", 1, min = 1, step = 1)),
           checkboxInput("show_weights", "Show edge weights on the plot", TRUE),
-          tableOutput("tree_edges")
+          div(class = "titulo-tarjeta mt-3", "Edges"),
+          div(class = "tabla-envoltura", tableOutput("tree_edges"))
         ),
-        plotOutput("tree_plot", height = "560px")
+        div(
+          uiOutput("tree_title"),
+          plotOutput("tree_plot", height = "560px")
+        )
       )
     ),
     nav_panel(
       "Pareto solutions",
-      div(class = "d-flex gap-2 mb-2",
-          selectInput("table_variant", NULL, choices = NULL, width = "260px"),
-          downloadButton("dl_front", "Download CSV", class = "btn-sm align-self-start")),
-      tableOutput("front_table")
+      div(class = "barra-acciones",
+          selectInput("table_variant", "Variant", choices = NULL),
+          downloadButton("dl_front", "Download CSV", class = "btn-default")),
+      div(class = "tabla-envoltura", tableOutput("front_table"))
     ),
     nav_panel(
       "Variant comparison",
-      tableOutput("compare_table"),
-      plotOutput("time_plot", height = "300px"),
+      div(class = "titulo-tarjeta", "Summary"),
+      div(class = "tabla-envoltura", tableOutput("compare_table")),
       helpText("Hypervolume (2 objectives only) uses a common reference point set 10% beyond",
-               "the worst value observed across all variants. Higher is better.")
+               "the worst value observed across all variants. Higher is better."),
+      div(class = "titulo-tarjeta mt-4", "Runtime per variant (seconds)"),
+      plotOutput("time_plot", height = "260px")
     ),
     nav_panel(
       "Instance",
-      div(class = "mb-2", downloadButton("dl_inst", "Download instance", class = "btn-sm")),
-      tableOutput("inst_table")
+      div(class = "barra-acciones",
+          downloadButton("dl_inst", "Download instance", class = "btn-default")),
+      div(class = "tabla-envoltura", tableOutput("inst_table"))
     ),
     nav_panel(
       "Log",
-      verbatimTextOutput("log")
+      div(class = "registro", verbatimTextOutput("log"))
     ),
     nav_panel(
       "About",
-      markdown("
+      div(class = "acerca", markdown("
+### What it does
+
 **momst** solves the Multi-Criteria Minimum Spanning Tree problem on complete
 weighted graphs with NSGA-II, optionally combined with one of three Pareto
 local search operators. Chromosomes are Prufer sequences, so every individual
@@ -275,8 +346,7 @@ decodes to a valid spanning tree.
 | `PLS`  | Pareto Local Search |
 | `TS`   | Tabu Search |
 
-Every run in this app calls `momst::run_momst()` with the parameters on the left.
-The same analysis in R:
+### The same analysis in R
 
 ```r
 library(momst)
@@ -287,13 +357,15 @@ res  <- run_momst(instance = inst, n = 10, num_obj = 2, variant = \"PLS\",
 plot_pareto_front(res)
 ```
 
-Reference: Parraga-Alava, J., Inostroza-Ponta, M. and Dorn, M. (2017).
+### Reference
+
+Parraga-Alava, J., Inostroza-Ponta, M. and Dorn, M. (2017).
 *Using local search strategies to improve the performance of NSGA-II for the
 Multi-Criteria Minimum Spanning Tree problem.* IEEE CEC 2017, pp. 1818 to 1825.
 [doi:10.1109/CEC.2017.7969432](https://doi.org/10.1109/CEC.2017.7969432)
 
 Source code: <https://github.com/jorgeklz/momst>
-")
+"))
     )
   )
 )
@@ -386,22 +458,35 @@ server <- function(input, output, session) {
     f[order(f$objective_1), , drop = FALSE]
   }
 
-  output$summary_boxes <- renderUI({
-    r <- runs(); req(r)
-    boxes <- lapply(names(r), function(v) {
-      value_box(
-        title = names(variant_labels)[variant_labels == v],
-        value = paste(nrow(r[[v]]$global_pareto), "solutions"),
-        p(sprintf("%.2f s", r[[v]]$elapsed)),
-        theme = value_box_theme(bg = variant_colors[[v]], fg = "white")
-      )
-    })
-    do.call(layout_column_wrap, c(list(width = 1 / max(2, length(boxes)), fill = FALSE), boxes))
+  output$kpis <- renderUI({
+    inst <- instance()
+    r <- runs()
+    boxes <- list(
+      kpi("Nodes", inst$n, class = "kpi-instancia",
+          note = sprintf("%d edges, complete graph", nrow(inst$instance))),
+      kpi("Objectives", inst$num_obj, class = "kpi-instancia",
+          note = if (input$inst_src == "upload") "uploaded instance" else "random instance")
+    )
+    if (!is.null(r)) {
+      boxes <- c(boxes, lapply(names(r), function(v) {
+        kpi(names(variant_labels)[variant_labels == v], nrow(r[[v]]$global_pareto),
+            unit = "solutions", note = sprintf("%.2f s", r[[v]]$elapsed),
+            color = variant_colors[[v]])
+      }))
+    }
+    div(class = "cuadricula kpis", boxes)
+  })
+
+  output$front_empty <- renderUI({
+    if (is.null(runs())) {
+      empty_state("No results yet",
+                  "Configure the instance and the solver on the left, then press Run solver.")
+    }
   })
 
   output$front_plot <- renderPlot({
     r <- runs()
-    validate(need(r, "Configure the instance and solver on the left, then press 'Run solver'."))
+    req(r)
     plot_fronts(r, attr(r, "num_obj"))
   }, res = 96)
 
@@ -430,12 +515,21 @@ server <- function(input, output, session) {
     validate(need(r, "Run the solver first."))
     s <- selected_solution()
     n <- attr(r, "n")
-    obj <- unlist(front_objectives(s$solution))
     plot_tree(unlist(s$solution[1L:(n - 2L)]), n, r[[s$variant]]$lookup,
-              sprintf("%s, row %d:  %s", s$variant, s$row,
-                      paste0("obj", seq_along(obj), " = ", round(obj, 2), collapse = "  |  ")),
               show_weights = isTRUE(input$show_weights))
   }, res = 96)
+
+  output$tree_title <- renderUI({
+    req(runs())
+    s <- selected_solution()
+    obj <- unlist(front_objectives(s$solution))
+    div(class = "titulo-grafico",
+        span(class = "punto", style = paste0("background:", variant_colors[[s$variant]], ";margin-right:6px")),
+        sprintf("%s, row %d", s$variant, s$row),
+        span(style = "color: var(--texto2); font-weight: 500; margin-left: 10px",
+             paste0("objective ", seq_along(obj), " = ", format(round(obj, 2), nsmall = 2),
+                    collapse = "  ·  ")))
+  })
 
   output$tree_edges <- renderTable({
     r <- runs(); req(r)
@@ -446,7 +540,7 @@ server <- function(input, output, session) {
     tab <- data.frame(from = e[, 1L], to = e[, 2L])
     for (k in seq_along(lk)) tab[[paste0("w", k)]] <- lk[[k]][e]
     tab
-  }, digits = 2, striped = TRUE, spacing = "xs")
+  }, digits = 2, striped = FALSE, spacing = "xs")
 
   front_table_data <- reactive({
     r <- runs(); req(r)
@@ -458,7 +552,7 @@ server <- function(input, output, session) {
                row.names = NULL, check.names = FALSE)
   })
 
-  output$front_table <- renderTable(front_table_data(), digits = 3, striped = TRUE,
+  output$front_table <- renderTable(front_table_data(), digits = 3, striped = FALSE,
                                     hover = TRUE, spacing = "s")
 
   output$dl_front <- downloadHandler(
@@ -485,17 +579,18 @@ server <- function(input, output, session) {
       tab$hypervolume <- vapply(fronts, hypervolume_2d, numeric(1L), ref = ref)
     }
     tab
-  }, digits = 2, striped = TRUE)
+  }, digits = 2, striped = FALSE)
 
   output$time_plot <- renderPlot({
     r <- runs(); req(r)
     t <- vapply(r, function(x) x$elapsed, numeric(1L))
-    op <- graphics::par(mar = c(4, 6, 2, 1)); on.exit(graphics::par(op))
-    graphics::barplot(t, horiz = TRUE, las = 1, col = variant_colors[names(t)],
-                      border = NA, xlab = "Seconds", main = "Runtime per variant")
+    op <- chart_par(mar = c(3.5, 4.5, 0.5, 1)); on.exit(graphics::par(op))
+    graphics::barplot(t, horiz = TRUE, col = variant_colors[names(t)], border = NA,
+                      xlab = "Seconds", space = 0.45, axes = FALSE)
+    graphics::axis(1, col = ink$border, col.ticks = ink$border)
   }, res = 96)
 
-  output$inst_table <- renderTable(instance()$instance, digits = 2, striped = TRUE, spacing = "xs")
+  output$inst_table <- renderTable(instance()$instance, digits = 2, striped = FALSE, spacing = "xs")
 
   output$dl_inst <- downloadHandler(
     filename = function() sprintf("momst_instance_n%d_obj%d.csv",

@@ -47,8 +47,15 @@ jobs:
       - name: Build web app
         run: |
           mkdir -p app_src/momst_src
-          cp inst/app/app.R app_src/
-          cp R/*.R app_src/momst_src/
+          cp -r inst/app/. app_src/
+          # plot.R (igraph), run_app.R and the package doc are not needed in the
+          # browser; leaving them out keeps igraph out of the webR bundle.
+          for f in R/*.R; do
+            case "$(basename "$f")" in
+              plot.R|run_app.R|momst-package.R) ;;
+              *) cp "$f" app_src/momst_src/ ;;
+            esac
+          done
           Rscript -e 'shinylive::export("app_src", "docs/app")'
 
       - name: Deploy to GitHub pages
