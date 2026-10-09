@@ -16,6 +16,14 @@ Single entry point to run the NSGA-II based MO-MST solver.
 - [`run_momst()`](https://jorgeklz.github.io/momst/reference/run_momst.md)
   : Run the MO-MST NSGA-II Solver
 
+## Interactive app
+
+Shiny explorer for the solver, also available online at
+<https://jorgeklz.github.io/momst/app/>.
+
+- [`run_app()`](https://jorgeklz.github.io/momst/reference/run_app.md) :
+  Launch the Interactive momst Explorer
+
 ## Instance and lookup
 
 Generate random complete-graph instances and pre-compute edge-weight

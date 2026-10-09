@@ -59,6 +59,25 @@ plot_pareto_front(res)
 plot_best_tree(res, n = 10)
 ```
 
+## Interactive web app
+
+The package ships a Shiny explorer that wraps
+[`run_momst()`](https://jorgeklz.github.io/momst/reference/run_momst.md).
+It lets you generate or upload an instance, run and compare the four
+variants, browse and download the Pareto front, and draw any spanning
+tree on the front.
+
+``` r
+
+# install.packages(c("shiny", "bslib"))
+momst::run_app()
+```
+
+The same app runs entirely in the browser (R compiled to WebAssembly via
+webR and shinylive), with no installation needed:
+<https://jorgeklz.github.io/momst/app/>. It is rebuilt by the pkgdown
+workflow on every push to the main branch.
+
 ## Vignettes
 
 ``` r
