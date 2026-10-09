@@ -34,12 +34,29 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown, local::.
+          extra-packages: any::pkgdown, any::shinylive, any::shiny, any::bslib, local::.
           needs: website
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
+
+      # Static, serverless build of inst/app with shinylive (R runs in the
+      # browser through webR). momst is not on the webR repository, so the
+      # package sources are bundled next to app.R and sourced at start-up.
+      - name: Build web app
+        run: |
+          mkdir -p app_src/momst_src
+          cp -r inst/app/. app_src/
+          # plot.R (igraph), run_app.R and the package doc are not needed in the
+          # browser; leaving them out keeps igraph out of the webR bundle.
+          for f in R/*.R; do
+            case "$(basename "$f")" in
+              plot.R|run_app.R|momst-package.R) ;;
+              *) cp "$f" app_src/momst_src/ ;;
+            esac
+          done
+          Rscript -e 'shinylive::export("app_src", "docs/app")'
 
       - name: Deploy to GitHub pages
         if: github.event_name != 'pull_request'

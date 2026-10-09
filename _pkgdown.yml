@@ -2,7 +2,29 @@ url: https://jorgeklz.github.io/momst/
 
 template:
   bootstrap: 5
-  bootswatch: cosmo
+  bslib:
+    bg: "#f7f8f5"
+    fg: "#17220f"
+    primary: "#1e6b14"
+    secondary: "#55604a"
+    success: "#2e8a1f"
+    warning: "#d4a80a"
+    danger: "#b3261e"
+    border-radius: 8px
+    font-size-base: 0.9375rem
+    base_font: {google: "Inter"}
+    heading_font: {google: "Inter"}
+    code_font: {google: "JetBrains Mono"}
+
+navbar:
+  bg: light
+  structure:
+    left: [intro, reference, articles, app, news]
+  components:
+    app:
+      text: Web app
+      icon: fa-play
+      href: https://jorgeklz.github.io/momst/app/
 
 reference:
   - title: "Package overview"
@@ -14,6 +36,11 @@ reference:
     desc: "Single entry point to run the NSGA-II based MO-MST solver."
     contents:
       - run_momst
+
+  - title: "Interactive app"
+    desc: "Shiny explorer for the solver, also available online at <https://jorgeklz.github.io/momst/app/>."
+    contents:
+      - run_app
 
   - title: "Instance and lookup"
     desc: "Generate random complete-graph instances and pre-compute edge-weight lookup tables."
@@ -56,3 +83,11 @@ articles:
     contents:
       - getting-started
       - momst-variants
+
+footer:
+  structure:
+    left: author
+    right: doi
+  components:
+    author: "Jorge Parraga-Alava, Ph.D"
+    doi: "[doi:10.1109/CEC.2017.7969432](https://doi.org/10.1109/CEC.2017.7969432)"

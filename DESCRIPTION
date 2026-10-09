@@ -33,9 +33,11 @@ Imports:
     utils,
     graphics
 Suggests:
+    bslib,
     igraph,
     knitr,
     rmarkdown,
+    shiny,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3
