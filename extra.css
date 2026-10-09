@@ -1,0 +1,81 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap");
+/* momst documentation site: UTM institutional palette (green and gold).
+   Same tokens and type scale as the web app (inst/app/www/utm.css). */
+:root {
+  --bg: #f7f8f5; --superficie: #ffffff; --superficie2: #f0f2ec; --borde: #e1e5db;
+  --texto: #17220f; --texto2: #55604a; --texto3: #98a18d;
+  --g1: #1e6b14; --g2: #2e8a1f; --g3: #4aab30; --g4: #72c255; --g6: #e2f2da;
+  --y3: #d4a80a; --y6: #fdf3cc;
+  --r: 12px;
+  --sombra: 0 1px 3px rgba(20, 40, 10, .06), 0 4px 18px rgba(20, 40, 10, .05);
+  --fs-micro: 10.5px; --fs-xs: 11.5px; --fs-sm: 12.5px; --fs-md: 13.5px;
+  --fs-base: 14px; --fs-lg: 16px; --fs-xl: 19px; --fs-2xl: 22px; --fs-3xl: 26px;
+}
+
+body { background: var(--bg); color: var(--texto); }
+a { color: var(--g1); text-decoration: none; }
+a:hover { color: var(--g2); text-decoration: underline; }
+
+/* navbar: white surface with the green and gold institutional strip */
+.navbar { background: var(--superficie) !important; border-bottom: 1px solid var(--borde);
+  box-shadow: none; padding-top: 10px; padding-bottom: 10px; }
+.navbar::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 4px;
+  background: linear-gradient(90deg, var(--g1) 0 72%, var(--y3) 72% 100%); }
+.navbar-brand { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; color: var(--g1) !important; }
+.navbar .nav-link { font-size: var(--fs-md); font-weight: 600; color: var(--texto2) !important; }
+.navbar .nav-link:hover { color: var(--g1) !important; text-decoration: none; }
+.navbar .nav-item.active .nav-link, .navbar .nav-link.active { color: var(--g1) !important; }
+.navbar .badge, .navbar .version { background: var(--g6) !important; color: var(--g1) !important;
+  border-radius: 99px; font-weight: 600; }
+.dropdown-menu { border: 1px solid var(--borde); border-radius: 10px; box-shadow: 0 10px 30px rgba(0, 0, 0, .12); }
+.dropdown-item:hover, .dropdown-item:focus { background: var(--g6); color: var(--g1); }
+
+/* headings */
+h1, .h1 { font-weight: 700; color: var(--texto); }
+h2, h3, h4 { font-weight: 700; color: var(--texto); }
+.page-header h1 { font-size: 2rem; }
+.page-header .subtitle, .page-header small { color: var(--texto2); }
+main h2 { border-bottom: 2px solid var(--borde); padding-bottom: 6px; }
+
+/* sidebar of each page */
+aside h2, #toc h2, .sidebar h2 { font-size: var(--fs-micro); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--texto3); border: 0; }
+#toc .nav-link, nav#toc .nav-link { color: var(--texto2); font-size: var(--fs-md); }
+#toc .nav-link.active { color: var(--g1); font-weight: 600; border-left-color: var(--g1); }
+
+/* code */
+code { color: var(--g1); background: var(--g6); border-radius: 5px; padding: 1px 5px; }
+pre { background: var(--superficie2) !important; border: 1px solid var(--borde); border-radius: 8px; }
+pre code { background: none; color: var(--texto); padding: 0; }
+a.sourceLine, .sourceCode a { color: inherit; }
+
+/* tables (reference index, README tables) */
+table { border-collapse: collapse; }
+.table, main table { --bs-table-bg: transparent; font-size: var(--fs-md); }
+main table th { font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: .06em;
+  color: var(--texto3); border-bottom: 2px solid var(--borde) !important; padding: 9px 10px; }
+main table td { border-bottom: 1px solid var(--borde); padding: 9px 10px; }
+main table tr:hover td { background: var(--superficie2); }
+
+/* reference index cards */
+.section.level2 .ref-index, .ref-index { background: var(--superficie); }
+dl dt { color: var(--g1); }
+
+/* buttons and callouts */
+.btn-primary { background: var(--g1); border-color: var(--g1); }
+.btn-primary:hover { background: var(--g2); border-color: var(--g2); }
+.alert-info, .callout { background: var(--g6); border-color: var(--g4); color: var(--g1); }
+.alert-warning { background: var(--y6); border-color: #ecd9a0; color: #8a6500; }
+
+/* footer: author and article DOI only */
+footer { border-top: 1px solid var(--borde); color: var(--texto3); font-size: var(--fs-sm);
+  padding-top: 18px; margin-top: 32px; }
+footer a { color: var(--g2); }
+
+a:focus-visible, button:focus-visible { outline: 2px solid var(--g2); outline-offset: 2px; border-radius: 6px; }
+
+/* active navbar item and section sizes */
+.navbar .nav-item.active > .nav-link, .navbar .nav-link.active, .navbar .active > .nav-link {
+  background: var(--g6) !important; color: var(--g1) !important; border-radius: 8px; }
+main h2 { font-size: 1.4rem; }
+main h3 { font-size: 1.15rem; }
