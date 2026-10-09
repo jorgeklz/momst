@@ -1,0 +1,442 @@
+/* Paleta institucional UTM — verde minimalista */
+:root {
+  --bg: #f7f8f5; --superficie: #ffffff; --superficie2: #f0f2ec; --borde: #e1e5db;
+  --texto: #17220f; --texto2: #55604a; --texto3: #98a18d;
+  --g1: #1e6b14; --g2: #2e8a1f; --g3: #4aab30; --g4: #72c255; --g6: #e2f2da;
+  --y3: #d4a80a; --y6: #fdf3cc;
+  --rojo: #b3261e;
+  --r: 12px;
+  --sombra: 0 1px 3px rgba(20, 40, 10, .06), 0 4px 18px rgba(20, 40, 10, .05);
+
+  /* Escala tipográfica única del sistema. Cada tamaño tiene un papel definido,
+     para que títulos, subtítulos, paneles, tablas y pastillas sean coherentes
+     en todas las pantallas. */
+  --fs-micro: 10.5px;  /* etiquetas en mayúsculas (título de panel, KPI)       */
+  --fs-xs:    11.5px;  /* metadatos y notas al pie                             */
+  --fs-sm:    12.5px;  /* texto secundario, pastillas, celdas densas           */
+  --fs-md:    13.5px;  /* interfaz: botones, campos, tablas                    */
+  --fs-base:  14px;    /* cuerpo                                               */
+  --fs-lg:    16px;    /* subtítulo de sección                                 */
+  --fs-xl:    19px;    /* título de sección grande                             */
+  --fs-2xl:   22px;    /* título de página                                     */
+  --fs-3xl:   26px;    /* cifra destacada                                      */
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--texto); font-size: var(--fs-base); }
+a { color: var(--g1); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.enlace-autor { color: var(--g2); font-weight: 500; }
+.enlace-autor:hover { color: var(--g1); text-decoration: underline; }
+button { font-family: inherit; cursor: pointer; }
+
+/* ---- estructura ---- */
+.app { display: flex; min-height: 100vh; }
+.sidebar { width: 240px; background: var(--superficie); border-right: 1px solid var(--borde);
+  position: fixed; top: 0; bottom: 0; display: flex; flex-direction: column; z-index: 50;
+  overflow-y: auto; }
+.sidebar-logo { padding: 18px 16px 14px; border-bottom: 1px solid var(--borde); }
+.sidebar-logo h1 { font-family: 'Playfair Display', serif; font-size: var(--fs-lg); color: var(--g1); line-height: 1.3; }
+.sidebar-logo p { font-size: var(--fs-xs); color: var(--texto3); margin-top: 3px; }
+.seccion-nav { font-size: var(--fs-micro); font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--texto3); padding: 16px 16px 6px; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 12px; margin: 1px 8px;
+  border-radius: 8px; font-size: var(--fs-md); color: var(--texto2); border: none; background: none;
+  width: calc(100% - 16px); text-align: left; transition: all .13s; }
+.nav-item:hover { background: var(--superficie2); color: var(--texto); text-decoration: none; }
+.nav-item.activo { background: var(--g6); color: var(--g1); font-weight: 600; }
+.sidebar-pie { margin-top: auto; padding: 14px 16px; border-top: 1px solid var(--borde);
+  font-size: var(--fs-micro); color: var(--texto3); line-height: 1.6; }
+.contenido { margin-left: 240px; flex: 1; min-width: 0; padding: 26px 32px 48px; }
+
+.menu-toggle { display: none; }
+.sidebar-overlay { display: none; }
+@media (max-width: 860px) {
+  .app { flex-direction: column; }
+  .contenido { margin-left: 0; padding: 18px; padding-top: 56px; }
+  .sidebar { transform: translateX(-100%); transition: transform .22s ease; width: 260px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, .18); }
+  .sidebar.abierto { transform: translateX(0); }
+  .menu-toggle { display: inline-flex; align-items: center; gap: 7px; position: fixed; top: 10px; left: 10px;
+    z-index: 60; background: var(--superficie); border: 1px solid var(--borde); border-radius: 9px;
+    padding: 8px 12px; font-size: var(--fs-md); font-weight: 600; color: var(--texto); box-shadow: var(--sombra); }
+  .sidebar-overlay { display: block; position: fixed; inset: 0; background: rgba(20, 30, 12, .38); z-index: 45; }
+  .barra-controles { gap: 7px; }
+}
+
+/* ---- componentes ---- */
+.titulo-pagina { font-size: var(--fs-2xl); font-weight: 700; margin-bottom: 4px; }
+.subtitulo-pagina { color: var(--texto2); font-size: var(--fs-md); margin-bottom: 22px; }
+.cuadricula { display: grid; gap: 14px; }
+.kpis { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom: 18px; }
+.tarjeta { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--r);
+  padding: 18px; box-shadow: var(--sombra); }
+.kpi-valor { font-size: var(--fs-3xl); font-weight: 700; color: var(--g1); }
+.kpi-etiqueta { font-size: var(--fs-xs); font-weight: 600; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--texto3); margin-top: 4px; }
+.titulo-tarjeta { font-size: var(--fs-xs); font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--texto3); margin-bottom: 12px; }
+.fila-graficos { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); margin-bottom: 18px; }
+
+/* tablas */
+.tabla { width: 100%; border-collapse: collapse; font-size: var(--fs-md); }
+.tabla th { text-align: left; padding: 9px 10px; font-size: var(--fs-micro); text-transform: uppercase;
+  letter-spacing: .06em; color: var(--texto3); border-bottom: 2px solid var(--borde); white-space: nowrap; }
+.tabla td { padding: 9px 10px; border-bottom: 1px solid var(--borde); vertical-align: top; }
+/* Reporte de variación: 25% más de espacio vertical entre filas */
+.tabla.tabla-espaciada td { padding-top: 11.25px; padding-bottom: 11.25px; }
+.tabla tr:hover td { background: var(--superficie2); }
+/* Columnas numéricas: se encogen a su contenido y nunca parten el valor, para
+   que las cifras se lean completas y la columna de texto absorba el ancho. */
+.tabla .num { text-align: right; font-variant-numeric: tabular-nums;
+  white-space: nowrap; width: 1%; }
+
+/* controles */
+.barra-controles { display: flex; flex-wrap: wrap; gap: 9px; align-items: center;
+  background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--r);
+  padding: 12px 14px; margin-bottom: 16px; }
+.entrada, .selector { box-sizing: border-box; height: 36px; padding: 0 11px; border: 1px solid var(--borde);
+  border-radius: 8px; font-size: var(--fs-md); font-family: inherit; background: var(--superficie2); color: var(--texto);
+  outline: none; vertical-align: middle; }
+.barra-controles .boton { box-sizing: border-box; height: 36px; display: inline-flex; align-items: center; }
+.barra-controles .boton.pequeno { height: 30px; }
+.entrada:focus, .selector:focus { border-color: var(--g2); background: #fff; }
+.boton { padding: 8px 16px; border-radius: 8px; border: none; background: var(--g1); color: #fff;
+  font-size: var(--fs-md); font-weight: 600; transition: background .13s; }
+.boton:hover { background: var(--g2); }
+.boton.secundario { background: var(--superficie2); color: var(--texto2); border: 1px solid var(--borde); }
+.boton.secundario:hover { background: var(--g6); color: var(--g1); }
+.boton.peligro { background: #fceeed; color: var(--rojo); border: 1px solid #f3d2d0; }
+.boton.pequeno { padding: 4px 10px; font-size: var(--fs-sm); }
+
+/* insignias */
+.insignia { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: var(--fs-xs); font-weight: 600; }
+.insignia.q1 { background: #e2f2da; color: #1e6b14; }
+.insignia.q2 { background: #eef7e0; color: #5a8a1f; }
+.insignia.q3 { background: #fdeede; color: #c06a14; }
+.insignia.q4 { background: #f9e4e2; color: #a3322a; }
+.insignia.na { background: var(--superficie2); color: var(--texto3); }
+.insignia.oa { background: var(--y6); color: #8a6500; }
+.insignia.rol { background: var(--g6); color: var(--g1); text-transform: capitalize; }
+
+/* paginación (se repite arriba y abajo de cada listado) */
+.paginacion { display: flex; gap: 10px; align-items: center; justify-content: center;
+  flex-wrap: wrap; margin-top: 16px; }
+.paginacion.arriba { margin-top: 0; margin-bottom: 12px; }
+.paginacion span { font-size: var(--fs-sm); color: var(--texto2); }
+.pag-actual { font-weight: 600; color: var(--texto2); white-space: nowrap; }
+.pag-controles { display: inline-flex; gap: 5px; align-items: center; flex-wrap: wrap;
+  justify-content: center; }
+.pag-puntos { padding: 0 2px; color: var(--texto3); }
+.pag-ir { display: inline-flex; gap: 6px; align-items: center; }
+.pag-ir .entrada { width: 70px; padding: 5px 8px; height: auto; }
+
+/* pastilla de autor sin afiliación UTM vigente */
+.insignia.ex-utm { background: #fdf3d0; color: #8a6d0b; border: 1px solid #f0dfa0; }
+
+/* icono de información con detalle contextual (por ejemplo, el motivo en
+   Riesgo y destacados): ocupa poco y despliega el texto al pulsarlo. */
+.btn-info { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--borde);
+  background: var(--superficie2); color: var(--texto2); font-size: var(--fs-sm);
+  font-weight: 700; font-style: italic; line-height: 1; padding: 0; }
+.btn-info:hover, .btn-info[aria-expanded="true"] { border-color: var(--g4);
+  background: var(--g6); color: var(--g1); }
+.motivo-detalle { position: absolute; right: 0; top: 28px; z-index: 20; width: max-content;
+  max-width: min(280px, 70vw); text-align: left; white-space: normal;
+  background: var(--superficie); border: 1px solid var(--borde); border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(20, 40, 10, .16); padding: 10px 28px 10px 12px;
+  font-size: var(--fs-sm); font-weight: 400; color: var(--texto2); line-height: 1.45; }
+.motivo-x { position: absolute; top: 4px; right: 6px; border: none; background: none;
+  color: var(--texto3); font-size: var(--fs-sm); padding: 2px 4px; }
+
+/* grupo de controles dentro de la cabecera de un panel: se alinea a la derecha
+   en pantalla amplia y ocupa toda la fila, repartiéndose el ancho, en móvil. */
+.controles-panel { margin-left: auto; display: inline-flex; gap: 6px;
+  align-items: center; flex-wrap: wrap; min-width: 0; max-width: 100%; }
+.controles-panel .selector, .controles-panel .entrada { min-width: 0; }
+@media (max-width: 640px) {
+  .controles-panel { margin-left: 0; width: 100%; }
+  .controles-panel .selector, .controles-panel .entrada { flex: 1 1 130px; }
+}
+
+/* formularios */
+.formulario { display: grid; gap: 11px; max-width: 420px; }
+.campo label { display: block; font-size: var(--fs-sm); font-weight: 600; color: var(--texto2); margin-bottom: 5px; }
+.campo .entrada, .campo .selector { width: 100%; }
+.error { background: #fceeed; color: var(--rojo); border-radius: 8px; padding: 9px 12px; font-size: var(--fs-sm); }
+.exito { background: var(--g6); color: var(--g1); border-radius: 8px; padding: 9px 12px; font-size: var(--fs-sm); }
+
+/* login */
+.login-fondo { min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(150deg, var(--g6) 0%, var(--bg) 45%, var(--y6) 100%); padding: 20px; }
+.login-caja { width: 100%; max-width: 380px; }
+.login-caja .tarjeta { padding: 30px; }
+
+/* pestañas */
+.pestanas { display: flex; gap: 4px; border-bottom: 2px solid var(--borde); margin-bottom: 18px;
+  flex-wrap: wrap; }
+.pestana { padding: 9px 16px; border: none; background: none; font-size: var(--fs-md); font-weight: 600;
+  color: var(--texto3); border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.pestana.activa { color: var(--g1); border-bottom-color: var(--g1); }
+
+/* botón flotante para volver al inicio de la página */
+.ir-arriba { position: fixed; right: 18px; bottom: 18px; z-index: 40;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 15px; border-radius: 99px; border: 1px solid var(--borde);
+  background: var(--superficie); color: var(--texto2); font-size: var(--fs-md);
+  font-weight: 600; box-shadow: 0 4px 16px rgba(20, 40, 10, .16); }
+.ir-arriba:hover { border-color: var(--g4); color: var(--g1); }
+
+.cargando { text-align: center; color: var(--texto3); padding: 40px; }
+
+/* ayuda contextual */
+.tabla th[title] { cursor: help; text-decoration: underline dotted var(--texto3); text-underline-offset: 3px; }
+.indicio-ayuda { color: var(--g3); font-size: var(--fs-micro); }
+.aviso { background: var(--y6); border: 1px solid #ecd9a0; color: #8a6500; border-radius: 8px;
+  padding: 9px 12px; font-size: var(--fs-sm); }
+
+/* barras de avance */
+.barra-progreso { height: 10px; background: var(--superficie2); border: 1px solid var(--borde);
+  border-radius: 99px; overflow: hidden; }
+.barra-progreso > div { height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, var(--g2), var(--g3)); transition: width .5s ease; }
+.barra-progreso.indeterminada > div { width: 35% !important; animation: deslizar 1.4s infinite ease-in-out; }
+@keyframes deslizar { 0% { margin-left: -35%; } 100% { margin-left: 100%; } }
+.etapa-fila { display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: var(--fs-md); }
+.etapa-icono { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: var(--fs-sm); flex-shrink: 0; }
+.etapa-icono.hecha { background: var(--g6); color: var(--g1); }
+.etapa-icono.actual { background: var(--g1); color: #fff; }
+.etapa-icono.pendiente { background: var(--superficie2); color: var(--texto3); }
+.etapa-icono.fallida { background: #fceeed; color: var(--rojo); }
+.lista-publicacion { border-bottom: 1px solid var(--borde); padding: 13px 2px; }
+.lista-publicacion:last-child { border-bottom: none; }
+.titulo-pub { font-weight: 600; font-size: var(--fs-md); line-height: 1.45; }
+.meta-pub { font-size: var(--fs-sm); color: var(--texto2); margin-top: 4px; display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+.chip-usuario { display: flex; align-items: center; gap: 8px; padding: 10px 16px; font-size: var(--fs-sm); color: var(--texto2); }
+.punto { width: 7px; height: 7px; border-radius: 50%; background: var(--g3); display: inline-block; }
+
+/* elementos visibles solo al imprimir (encabezado del PDF de comparación) */
+.solo-print { display: none; }
+
+/* impresión / exportar a PDF: solo el contenido de comparación */
+@media print {
+  .sidebar, .no-print { display: none !important; }
+  .app { display: block; }
+  .contenido { margin-left: 0; padding: 0; }
+  .solo-print { display: block; }
+  .tarjeta { break-inside: avoid; box-shadow: none; border-color: #ccc; }
+  a { color: var(--texto); }
+  body { background: #fff; }
+}
+
+/* barra superior: buscador global + fecha de datos */
+.barra-superior { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.barra-superior > div:last-child { margin-bottom: 0; white-space: nowrap; }
+
+/* buscador global */
+.buscador-global { position: relative; flex: 1; max-width: 460px; }
+.buscador-menu { position: absolute; top: calc(100% + 5px); left: 0; right: 0; z-index: 50;
+  background: var(--superficie); border: 1px solid var(--borde); border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.12); max-height: 60vh; overflow-y: auto; padding: 5px; }
+.buscador-seccion { font-size: var(--fs-micro); font-weight: 700; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--texto3); padding: 8px 10px 4px; }
+.buscador-item { display: flex; flex-direction: column; gap: 2px; width: 100%; text-align: left;
+  background: none; border: none; cursor: pointer; padding: 7px 10px; border-radius: 7px; }
+.buscador-item:hover { background: var(--g6); }
+.buscador-item-nombre { font-size: var(--fs-md); color: var(--texto); line-height: 1.3;
+  overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.buscador-item-meta { font-size: var(--fs-xs); color: var(--texto3); }
+.buscador-vacio { padding: 12px 10px; font-size: var(--fs-sm); color: var(--texto3); }
+
+/* ---------- skeletons (placeholders de carga) ---------- */
+.sk { position: relative; overflow: hidden; background: var(--superficie2); border-radius: 10px; }
+.sk::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.65), transparent);
+  animation: sk-brillo 1.25s ease-in-out infinite; }
+@keyframes sk-brillo { 100% { transform: translateX(100%); } }
+.sk-kpi { height: 92px; }
+.sk-card { height: 300px; }
+.sk-tabla { display: flex; flex-direction: column; gap: 8px; }
+.sk-fila { height: 42px; }
+.sk-tarjeta { height: 96px; }
+@media (prefers-reduced-motion: reduce) { .sk::after { animation: none; } }
+
+/* ---------- toasts (avisos temporales) ---------- */
+.toasts { position: fixed; right: 18px; bottom: 18px; z-index: 1000;
+  display: flex; flex-direction: column; gap: 10px; max-width: 360px; }
+.toast { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 11px;
+  background: var(--superficie); border: 1px solid var(--borde); box-shadow: var(--sombra2, 0 10px 30px rgba(0,0,0,.14));
+  font-size: var(--fs-md); color: var(--texto); cursor: pointer; animation: toast-in .18s ease; }
+.toast .toast-ic { display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 50%; color: #fff; font-size: var(--fs-sm); flex-shrink: 0; }
+.toast.exito { border-left: 4px solid var(--g2); }
+.toast.exito .toast-ic { background: var(--g2); }
+.toast.error { border-left: 4px solid var(--rojo); }
+.toast.error .toast-ic { background: var(--rojo); }
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ---------- accesibilidad: foco visible por teclado ---------- */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible,
+textarea:focus-visible, [tabindex]:focus-visible, .nav-item:focus-visible, .pestana:focus-visible {
+  outline: 2px solid var(--g2); outline-offset: 2px; border-radius: 6px;
+}
+
+/* ---------- encabezados de tabla fijos al hacer scroll ---------- */
+.tabla thead th { position: sticky; top: 0; z-index: 2; background: var(--superficie);
+  box-shadow: inset 0 -2px 0 var(--borde); }
+.tabla thead th.num { text-align: right; }
+
+/* ---------- paleta de comandos (Cmd/Ctrl+K) ---------- */
+.cmdk-fondo { position: fixed; inset: 0; background: rgba(20, 30, 12, .4); z-index: 200;
+  display: flex; align-items: flex-start; justify-content: center; padding-top: 12vh; }
+.cmdk { width: min(560px, 92vw); background: var(--superficie); border: 1px solid var(--borde);
+  border-radius: 14px; box-shadow: 0 20px 60px rgba(0, 0, 0, .3); overflow: hidden; }
+.cmdk-input { width: 100%; border: none; outline: none; padding: 16px 18px; font-size: var(--fs-lg);
+  font-family: inherit; color: var(--texto); border-bottom: 1px solid var(--borde); background: var(--superficie); }
+.cmdk-lista { max-height: 52vh; overflow-y: auto; padding: 6px; }
+.cmdk-grupo { font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: .07em; color: var(--texto3);
+  font-weight: 700; padding: 8px 12px 4px; }
+.cmdk-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 9px;
+  font-size: var(--fs-base); cursor: pointer; color: var(--texto); }
+.cmdk-item.sel { background: var(--g6); color: var(--g1); }
+.cmdk-ic { width: 18px; text-align: center; color: var(--texto3); }
+.cmdk-item.sel .cmdk-ic { color: var(--g1); }
+.cmdk-vacio { padding: 18px 12px; color: var(--texto3); font-size: var(--fs-md); text-align: center; }
+.cmdk-pie { border-top: 1px solid var(--borde); padding: 8px 14px; font-size: var(--fs-xs); color: var(--texto3); }
+
+/* ---------- accesos rápidos del panel de inicio (por rol) ---------- */
+.accesos-rapidos { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px; margin-bottom: 20px; }
+.acceso-card { display: flex; align-items: center; gap: 10px; padding: 14px 16px; text-align: left;
+  background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--r);
+  box-shadow: var(--sombra); color: var(--texto); font-size: var(--fs-base); font-weight: 600;
+  transition: border-color .13s, transform .13s; }
+.acceso-card:hover { border-color: var(--g4); color: var(--g1); transform: translateY(-2px); }
+.acceso-card svg { color: var(--g2); flex-shrink: 0; }
+
+/* ---------- experiencia en móvil (páginas de consulta) ---------- */
+@media (max-width: 640px) {
+  /* JERARQUÍA: el contenido (nombres de autores, títulos, revistas) manda; los
+     controles nunca deben verse más grandes que él.
+     Los campos van a 16px por obligación técnica: por debajo de ese tamaño iOS
+     hace zoom al enfocarlos y descuadra la página. Para que la jerarquía siga
+     siendo correcta, el contenido sube a 15-16px en móvil. */
+  .entrada, .selector, input, select, textarea { font-size: var(--fs-lg); }
+  .entrada, .selector, .barra-controles .boton { height: 42px; }
+  .boton { padding: 11px 16px; font-size: var(--fs-md); }
+  .boton.pequeno { padding: 8px 12px; font-size: var(--fs-sm); }
+  /* Contenido: por encima de los controles auxiliares. */
+  .tabla { font-size: var(--fs-md); }
+  .tabla td a { font-size: var(--fs-md); }        /* nombre de autor           */
+  .titulo-pub { font-size: var(--fs-md); }        /* título de publicación     */
+  .meta-pub { font-size: var(--fs-sm); }          /* revista, año, citas       */
+  .tabla th { font-size: var(--fs-xs); }          /* encabezados, discretos    */
+
+  /* Filtros apilados a lo ancho: en pantalla estrecha es más legible que
+     verlos comprimidos en una fila. */
+  .barra-controles { padding: 12px; gap: 8px; }
+  .barra-controles .entrada,
+  .barra-controles .selector { flex: 1 1 100%; min-width: 0; }
+  .barra-controles label { font-size: var(--fs-sm); color: var(--texto3); }
+
+  /* Tablas anchas: desplazamiento horizontal dentro de la tarjeta, con inercia,
+     para no romper el ancho de la página. */
+  .tarjeta { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 14px; }
+  /* Toda tabla se desplaza por sí misma, esté o no dentro de un contenedor
+     preparado. Es la solución universal al desborde: la página nunca se
+     ensancha y la tabla se recorre de lado. */
+  .tabla { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    max-width: 100%; min-width: 100%; }
+  .tabla th, .tabla td { padding: 8px; }
+  /* El texto puede partirse (mantiene la tabla estrecha); los números no. */
+  .tabla th, .tabla td { white-space: normal; }
+  .tabla .num, .tabla th.num { white-space: nowrap; }
+  /* La columna del nombre recibe ancho suficiente para caber en una línea. Solo
+     se aplica a columnas de texto: en las tablas sin columna "#" la segunda es
+     numérica y ensancharla desbordaba el panel. */
+  .tabla td:nth-child(2):not(.num), .tabla th:nth-child(2):not(.num) {
+    min-width: 150px; max-width: 210px; }
+  /* Las columnas numéricas se ajustan a su contenido. */
+  .tabla .num { width: 1%; }
+  /* Los botones dentro de una tabla no parten su texto. */
+  .tabla .boton { white-space: nowrap; }
+
+  /* Indicadores en dos columnas: aprovecha el ancho sin encoger el número. */
+  .kpis { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .kpi-valor { font-size: var(--fs-2xl); }
+  .kpi-etiqueta { font-size: var(--fs-micro); }
+  .titulo-pagina { font-size: var(--fs-xl); }
+  .subtitulo-pagina { font-size: var(--fs-sm); margin-bottom: 16px; }
+  .accesos-rapidos { grid-template-columns: repeat(2, 1fr); }
+
+  /* Paginación: el salto directo se oculta (el teclado numérico estorba en
+     móvil) y los controles se centran en una sola fila desplazable. */
+  .pag-ir { display: none; }
+  .paginacion { gap: 8px; }
+  .pag-actual { flex-basis: 100%; text-align: center; }
+
+  /* Pestañas como botones: en pantalla estrecha una fila de pestañas con línea
+     inferior se sale del ancho; como botones envuelven y se tocan mejor. */
+  .pestanas { border-bottom: none; gap: 6px; margin-bottom: 14px; }
+  .pestana { border: 1px solid var(--borde); background: var(--superficie);
+    border-radius: 99px; padding: 9px 14px; margin-bottom: 0;
+    font-size: var(--fs-sm); color: var(--texto2); }
+  .pestana.activa { background: var(--g1); border-color: var(--g1); color: #fff; }
+
+  .ir-arriba { right: 12px; bottom: 12px; padding: 9px 14px; }
+
+  /* Red de seguridad: ningún ancho mínimo fijo puede empujar la página más
+     allá del viewport (cubre estilos en línea heredados). */
+  .barra-controles > *, .tarjeta > * { min-width: 0 !important; max-width: 100%; }
+  /* También los campos anidados dentro de una tarjeta (formularios de
+     administración), que no son hijos directos. */
+  .tarjeta input, .tarjeta .entrada, .tarjeta .selector,
+  .tarjeta textarea { min-width: 0 !important; max-width: 100%; }
+  /* Las rejillas se declaran en línea en varias páginas (por ejemplo los tres
+     paneles de Comparar); !important es necesario para imponer una columna. */
+  .cuadricula:not(.kpis), .grid2, .fila-graficos { grid-template-columns: 1fr !important; }
+
+  /* Cabeceras de panel con controles alineados a la derecha
+     (<span style="margin-left:auto; display:inline-flex">): en móvil pasan a
+     ocupar toda la fila y sus campos se reparten el ancho. Es el patrón que
+     desbordaba en el Sankey y en los filtros de la ficha de autor. */
+  .titulo-tarjeta { flex-wrap: wrap; }
+  .titulo-tarjeta > span[style*="auto"],
+  .tarjeta > div > span[style*="auto"] {
+    margin-left: 0 !important; width: 100%; flex-wrap: wrap; }
+  .titulo-tarjeta .selector, .titulo-tarjeta .entrada { flex: 1 1 130px; min-width: 0; }
+
+  /* Evita el destello gris al tocar y el rebote horizontal de la página. */
+  a, button { -webkit-tap-highlight-color: transparent; }
+  body { overscroll-behavior-x: none; }
+}
+@media (max-width: 380px) {
+  .kpis { grid-template-columns: 1fr; }
+}
+
+/* ---------- sin desbordes: el contenido nunca rompe el ancho ---------- */
+/* Regla general para todos los tamaños, no solo móvil. */
+.contenido, .tarjeta, .barra-controles { max-width: 100%; }
+.tarjeta > canvas, .tarjeta svg, .tarjeta img { max-width: 100%; }
+/* Ningún campo puede ser más ancho que su contenedor. Los desplegables con
+   textos largos (por ejemplo "Facultad · Departamento") recortan el texto en
+   vez de estirar la tabla. */
+.entrada, .selector, input, select, textarea { max-width: 100%; }
+.selector { text-overflow: ellipsis; }
+.tabla .selector { max-width: 220px; }
+/* Títulos y textos largos (títulos de artículo, revistas, URLs) se parten en
+   vez de estirar el contenedor. */
+.titulo-pagina, .subtitulo-pagina, .titulo-tarjeta,
+.titulo-pub, .meta-pub, .tabla td:not(.num) { overflow-wrap: anywhere; }
+/* Las pastillas nunca parten su texto interno. */
+.insignia { white-space: nowrap; }
+/* Rejillas: sus celdas pueden encogerse por debajo de su contenido. */
+.cuadricula > * { min-width: 0; }
+@media (max-width: 640px) {
+  /* Un gráfico ancho es preferible desplazarlo que deformarlo. */
+  .fila-graficos { grid-template-columns: 1fr; }
+  .titulo-tarjeta { font-size: var(--fs-micro); }
+  /* Los grupos de acciones alineados a la derecha pasan a ocupar toda la fila. */
+  .barra-controles > span[style*="auto"] { margin-left: 0 !important; width: 100%;
+    justify-content: flex-start; flex-wrap: wrap; }
+}

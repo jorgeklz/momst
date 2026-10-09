@@ -1,16 +1,13 @@
 # momst interactive explorer
 #
-# Shiny front end for the momst package. It runs in two settings:
-#   * locally, through momst::run_app(), using the installed package;
-#   * in the browser (shinylive / webR), where the package sources are
-#     bundled next to this file in the "momst_src" folder.
+# Shiny front end for the momst package, launched with momst::run_app().
+# When momst is not installed (for example, running this file from the
+# source tree), the package sources are sourced instead.
 
 library(shiny)
 library(bslib)
 
-# system.file() is used instead of requireNamespace(): under shinylive,
-# requireNamespace() tries to install a missing package from the webR
-# repository and does not return FALSE, which stops the app from starting.
+# system.file() checks for the installed package without trying to install it.
 pkg_name <- "momst"
 if (nzchar(system.file(package = pkg_name))) {
   if (!paste0("package:", pkg_name) %in% search()) attachNamespace(pkg_name)

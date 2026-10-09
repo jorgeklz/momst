@@ -4,9 +4,11 @@
   generate or upload instances, run and compare the four solver variants,
   inspect and download Pareto fronts and draw any spanning tree on the front.
   For two objectives it also reports the hypervolume of each variant.
-* The same app is published as a static shinylive page (R running in the
-  browser through webR) at <https://jorgeklz.github.io/momst/app/>, built by
-  the pkgdown workflow.
+* A browser version of the app is published at
+  <https://jorgeklz.github.io/momst/app/>. It is a JavaScript port of the
+  solver (`webapp/`) that reproduces `run_momst()` exactly for the same seed,
+  checked against the R package before every deployment. It works in any
+  modern browser, Safari included.
 * The app follows the Universidad Técnica de Manabí visual identity: green and
   gold palette, Inter and Playfair Display typography and the UTM logo.
 
