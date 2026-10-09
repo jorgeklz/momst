@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/jorgeklz/momst/blob/claude/elegant-ptolemy-6u4cye/inst/CITATION)
+[`inst/CITATION`](https://github.com/jorgeklz/momst/blob/main/inst/CITATION)
 
 Parraga-Alava, J., Inostroza-Ponta, M., & Dorn, M. (2017). Using local
 search strategies to improve the performance of NSGA-II for the
