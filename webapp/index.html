@@ -3,62 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>momst explorer</title>
+  <title>momst web app</title>
   <meta name="description" content="Multi-objective minimum spanning tree solver (NSGA-II with Pareto local search) running in the browser.">
-  <link rel="icon" href="utm-logo.png">
+  <link rel="icon" type="image/svg+xml" href="jpa-favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap">
   <link rel="stylesheet" href="estilos.css">
   <link rel="stylesheet" href="app.css">
 </head>
 <body>
-<div class="app">
-  <button class="menu-toggle" id="menu-toggle" type="button" aria-controls="sidebar" aria-expanded="false">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-    Menu
-  </button>
-  <div class="sidebar-overlay" id="sidebar-overlay" hidden></div>
-
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <img src="utm-logo.png" alt="Technical University of Manabi logo" class="logo-utm">
-      <h1>momst explorer</h1>
-      <p>Multi-objective minimum spanning tree</p>
+<header class="barra-app">
+  <div class="barra-app-in">
+    <a class="marca-app" href="https://jorgeklz.github.io/research/" target="_blank" rel="noopener" aria-label="Jorge Parraga-Alava, research website">
+      <img src="jpa-logo.svg" alt="Jorge Parraga-Alava logo" class="logo-jpa"></a>
+    <div class="titulo-app">
+      <h1>momst <span>web app</span></h1>
+      <p>Try the R package in your browser: multi-objective minimum spanning trees with NSGA-II and Pareto local search.</p>
     </div>
-
-    <nav aria-label="Sections">
-      <div class="seccion-nav">Results</div>
-      <button class="nav-item activo" type="button" data-view="front">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v16h16"/><path d="M7 7l3 5 4 2 5 2"/></svg>Pareto front</button>
-      <button class="nav-item" type="button" data-view="tree">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><path d="M12 7v4M12 11l-5 5M12 11l5 5"/></svg>Spanning tree</button>
-      <button class="nav-item" type="button" data-view="solutions">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Pareto solutions</button>
-      <button class="nav-item" type="button" data-view="compare">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 20V10M12 20V4M18 20v-7"/></svg>Variant comparison</button>
-      <div class="seccion-nav">Data</div>
-      <button class="nav-item" type="button" data-view="instance">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 4v16"/></svg>Instance</button>
-      <button class="nav-item" type="button" data-view="log">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7l4 4-4 4M11 17h8"/></svg>Run log</button>
-      <div class="seccion-nav">Package</div>
-      <button class="nav-item" type="button" data-view="about">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>About</button>
+    <nav class="enlaces-app" aria-label="Links">
+      <a href="../">Documentation</a>
+      <a href="../reference/run_momst.html">run_momst()</a>
+      <a href="https://github.com/jorgeklz/momst" target="_blank" rel="noopener">GitHub</a>
     </nav>
+  </div>
+</header>
 
-    <div class="sidebar-pie">
-      Jorge Parraga-Alava, Ph.D<br>
-      <a href="https://doi.org/10.1109/CEC.2017.7969432" target="_blank" rel="noopener">doi:10.1109/CEC.2017.7969432</a>
-    </div>
-  </aside>
-
-  <main class="contenido">
-    <div class="franja-utm" aria-hidden="true"></div>
-    <h2 class="titulo-pagina">Multi-Objective Minimum Spanning Tree</h2>
-    <p class="subtitulo-pagina">NSGA-II with Prufer encoding and optional Pareto local search on complete weighted graphs.
-      The solver runs in your browser and reproduces <code>momst::run_momst()</code> exactly for the same seed.</p>
-
+<div class="espacio">
+  <aside class="columna-parametros" aria-label="Parameters">
     <!-- Parameters -->
     <section class="tarjeta parametros" aria-labelledby="t-param">
       <div class="titulo-tarjeta" id="t-param">Parameters</div>
@@ -91,11 +63,12 @@
 
         <div class="grupo">
           <div class="grupo-titulo">Solver</div>
+          <p class="nota chips-nota">Variants: NSGA-II alone or combined with a local search.</p>
           <fieldset class="chips" aria-label="Variants">
-            <label class="chip"><input type="checkbox" name="variant" value="base" checked><span><i class="marca" data-v="base"></i>NSGA-II (base)</span></label>
-            <label class="chip"><input type="checkbox" name="variant" value="PR"><span><i class="marca" data-v="PR"></i>+ Path Relinking</span></label>
-            <label class="chip"><input type="checkbox" name="variant" value="PLS"><span><i class="marca" data-v="PLS"></i>+ Pareto Local Search</span></label>
-            <label class="chip"><input type="checkbox" name="variant" value="TS"><span><i class="marca" data-v="TS"></i>+ Tabu Search</span></label>
+            <label class="chip"><input type="checkbox" name="variant" value="base" checked><span><i class="marca" data-v="base"></i>Base NSGA-II</span></label>
+            <label class="chip"><input type="checkbox" name="variant" value="PR"><span><i class="marca" data-v="PR"></i>Path Relinking</span></label>
+            <label class="chip"><input type="checkbox" name="variant" value="PLS"><span><i class="marca" data-v="PLS"></i>Pareto LS</span></label>
+            <label class="chip"><input type="checkbox" name="variant" value="TS"><span><i class="marca" data-v="TS"></i>Tabu Search</span></label>
           </fieldset>
           <div class="campos">
             <div class="campo"><label for="iterations">Independent runs</label><input class="entrada" id="iterations" type="number" min="1" max="30" step="1" value="2"></div>
@@ -126,10 +99,23 @@
       </form>
     </section>
 
+  </aside>
+
+  <main class="columna-resultados">
     <div class="cuadricula kpis" id="kpis"></div>
 
-    <!-- Views -->
-    <section class="vista tarjeta" data-view="front" aria-label="Pareto front">
+    <div class="tarjeta resultados">
+    <div class="pestanas" role="tablist" aria-label="Results">
+      <button class="pestana activa" type="button" role="tab" data-view="front" aria-selected="true">Pareto front</button>
+      <button class="pestana" type="button" role="tab" data-view="tree" aria-selected="false">Spanning tree</button>
+      <button class="pestana" type="button" role="tab" data-view="solutions" aria-selected="false">Solutions</button>
+      <button class="pestana" type="button" role="tab" data-view="compare" aria-selected="false">Compare variants</button>
+      <button class="pestana" type="button" role="tab" data-view="instance" aria-selected="false">Instance</button>
+      <button class="pestana" type="button" role="tab" data-view="log" aria-selected="false">Run log</button>
+      <button class="pestana" type="button" role="tab" data-view="about" aria-selected="false">About</button>
+    </div>
+
+    <section class="vista" data-view="front" aria-label="Pareto front">
       <div class="cabecera-vista">
         <div class="titulo-tarjeta">Global Pareto front by variant</div>
         <span class="nota">Click a point to draw its spanning tree.</span>
@@ -137,7 +123,7 @@
       <div id="front"></div>
     </section>
 
-    <section class="vista tarjeta" data-view="tree" hidden aria-label="Spanning tree">
+    <section class="vista" data-view="tree" hidden aria-label="Spanning tree">
       <div class="dos-columnas">
         <div class="panel-lateral">
           <div class="titulo-tarjeta">Solution</div>
@@ -160,7 +146,7 @@
       </div>
     </section>
 
-    <section class="vista tarjeta" data-view="solutions" hidden aria-label="Pareto solutions">
+    <section class="vista" data-view="solutions" hidden aria-label="Pareto solutions">
       <div class="cabecera-vista">
         <div class="titulo-tarjeta">Pareto solutions</div>
         <span class="controles-panel">
@@ -171,7 +157,7 @@
       <div id="front_table"></div>
     </section>
 
-    <section class="vista tarjeta" data-view="compare" hidden aria-label="Variant comparison">
+    <section class="vista" data-view="compare" hidden aria-label="Variant comparison">
       <div class="titulo-tarjeta">Summary</div>
       <div id="compare_table"></div>
       <p class="nota" id="hv_note">Hypervolume (2 objectives only) uses a common reference point set 10% beyond the worst value observed across all variants. Higher is better.</p>
@@ -179,7 +165,7 @@
       <div id="time_plot"></div>
     </section>
 
-    <section class="vista tarjeta" data-view="instance" hidden aria-label="Instance">
+    <section class="vista" data-view="instance" hidden aria-label="Instance">
       <div class="cabecera-vista">
         <div class="titulo-tarjeta" id="inst_title">Instance</div>
         <span class="controles-panel"><button class="boton secundario pequeno" id="dl_inst" type="button">Download instance</button></span>
@@ -187,12 +173,12 @@
       <div id="inst_table"></div>
     </section>
 
-    <section class="vista tarjeta" data-view="log" hidden aria-label="Run log">
+    <section class="vista" data-view="log" hidden aria-label="Run log">
       <div class="titulo-tarjeta">Run log</div>
       <pre class="registro" id="log">Press Run solver to start.</pre>
     </section>
 
-    <section class="vista tarjeta acerca" data-view="about" hidden aria-label="About">
+    <section class="vista acerca" data-view="about" hidden aria-label="About">
       <h3>What it does</h3>
       <p><strong>momst</strong> solves the Multi-Criteria Minimum Spanning Tree problem on complete weighted graphs with NSGA-II,
         optionally combined with one of three Pareto local search operators. Chromosomes are Prufer sequences, so every
@@ -228,9 +214,16 @@ momst::run_app()</code></pre>
         <a href="https://github.com/jorgeklz/momst" target="_blank" rel="noopener">github.com/jorgeklz/momst</a></p>
     </section>
 
-    <div class="tooltip-grafico" id="tooltip" role="tooltip" hidden></div>
+    </div>
   </main>
 </div>
+
+<footer class="pie-app">
+  <span>Jorge Parraga-Alava, Ph.D</span>
+  <a href="https://doi.org/10.1109/CEC.2017.7969432" target="_blank" rel="noopener">doi:10.1109/CEC.2017.7969432</a>
+</footer>
+
+<div class="tooltip-grafico" id="tooltip" role="tooltip" hidden></div>
 <script src="momst.js"></script>
 <script src="app.js"></script>
 </body>

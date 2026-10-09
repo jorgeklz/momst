@@ -49,7 +49,7 @@ jobs:
       - name: Build web app
         run: |
           mkdir -p docs/app
-          cp webapp/index.html webapp/*.css webapp/*.js webapp/*.png docs/app/
+          cp webapp/index.html webapp/*.css webapp/*.js webapp/*.svg docs/app/
 
       - name: Deploy to GitHub pages
         if: github.event_name != 'pull_request'
