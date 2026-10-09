@@ -33,8 +33,13 @@ if (shinyliveMetaTag !== null) {
 }
 serviceWorkerDir = serviceWorkerDir.replace(/\/$/, "");
 var serviceWorkerPath = serviceWorkerDir + "/shinylive-sw.js";
+function momstNoServiceWorker() {
+  const show = () => { document.body.innerHTML = '<p style="font-family: Inter, system-ui, sans-serif; max-width: 560px; margin: 15vh auto; padding: 0 16px; color: #17220f; line-height: 1.5">This app runs R inside your browser and needs Service Workers. Please open it in an up-to-date Chrome, Edge, Firefox or Safari, outside private browsing.</p>'; };
+  if (document.body) show(); else window.addEventListener('DOMContentLoaded', show);
+}
+if (!("serviceWorker" in navigator)) momstNoServiceWorker();
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register(serviceWorkerPath, { type: "module" }).then((registration) => registration.update()).then(() => console.log("Service Worker registered")).catch(() => console.log("Service Worker registration failed"));
+  navigator.serviceWorker.register(serviceWorkerPath, { type: "module" }).catch(() => navigator.serviceWorker.register(serviceWorkerPath)).then((registration) => registration.update()).then(() => console.log("Service Worker registered")).catch(() => { console.log("Service Worker registration failed"); momstNoServiceWorker(); });
   navigator.serviceWorker.ready.then(() => {
     if (!navigator.serviceWorker.controller) {
       window.location.reload();
