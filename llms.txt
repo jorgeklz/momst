@@ -73,10 +73,13 @@ tree on the front.
 momst::run_app()
 ```
 
-The same app runs entirely in the browser (R compiled to WebAssembly via
-webR and shinylive), with no installation needed:
-<https://jorgeklz.github.io/momst/app/>. It is rebuilt by the pkgdown
-workflow on every push to the main branch.
+A browser version runs at <https://jorgeklz.github.io/momst/app/> with
+no installation. It is a JavaScript port of the solver, including R’s
+random number generator, so with the same instance, parameters and seed
+it returns the same Pareto front as
+[`run_momst()`](https://jorgeklz.github.io/momst/reference/run_momst.md).
+The pkgdown workflow checks this against the R package before every
+deployment (`webapp/test/check-against-r.js`).
 
 ## Vignettes
 

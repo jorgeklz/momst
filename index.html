@@ -146,7 +146,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages(c("shiny", "bslib"))</span></span>
 <span><span class="fu">momst</span><span class="fu">::</span><span class="fu"><a href="reference/run_app.html">run_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>The same app runs entirely in the browser (R compiled to WebAssembly via webR and shinylive), with no installation needed: <a href="https://jorgeklz.github.io/momst/app/" class="uri">https://jorgeklz.github.io/momst/app/</a>. It is rebuilt by the pkgdown workflow on every push to the main branch.</p>
+<p>A browser version runs at <a href="https://jorgeklz.github.io/momst/app/" class="uri">https://jorgeklz.github.io/momst/app/</a> with no installation. It is a JavaScript port of the solver, including R’s random number generator, so with the same instance, parameters and seed it returns the same Pareto front as <code><a href="reference/run_momst.html">run_momst()</a></code>. The pkgdown workflow checks this against the R package before every deployment (<code>webapp/test/check-against-r.js</code>).</p>
 </div>
 <div class="section level2">
 <h2 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a>

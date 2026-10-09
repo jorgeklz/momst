@@ -27,8 +27,11 @@ Called for its side effect; returns the value of
 
 ## Details
 
-The same application is published as a static web page (it runs R in the
-browser through webR) at <https://jorgeklz.github.io/momst/app/>.
+A browser version is published at
+<https://jorgeklz.github.io/momst/app/>. It is a JavaScript port of the
+solver that returns the same Pareto front as
+[`run_momst`](https://jorgeklz.github.io/momst/reference/run_momst.md)
+for the same instance, parameters and seed.
 
 ## Examples
 
