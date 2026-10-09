@@ -695,7 +695,7 @@
 
   // Bring the results into view when they start below the visible area.
   function revealResults(target) {
-    var el = target || document.querySelector(".vista:not([hidden])");
+    var el = target || document.querySelector(".resultados");
     if (!el) return;
     var top = el.getBoundingClientRect().top;
     if (top > window.innerHeight * 0.55 || top < 0) {
@@ -706,37 +706,34 @@
 
   function setView(view, reveal) {
     state.view = view;
-    document.querySelectorAll(".nav-item").forEach(function (b) {
+    document.querySelectorAll(".pestana").forEach(function (b) {
       var on = b.getAttribute("data-view") === view;
-      b.classList.toggle("activo", on);
-      if (on) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+      b.classList.toggle("activa", on);
+      b.setAttribute("aria-selected", String(on));
+      b.tabIndex = on ? 0 : -1;
     });
     document.querySelectorAll(".vista").forEach(function (sec) { sec.hidden = sec.getAttribute("data-view") !== view; });
-    closeMenu();
     hideTip();
     renderView();
     if (reveal) revealResults();
   }
 
-  function closeMenu() {
-    $("sidebar").classList.remove("abierto");
-    $("sidebar-overlay").hidden = true;
-    $("menu-toggle").setAttribute("aria-expanded", "false");
-  }
-
   // --------------------------------------------------------------- init ---
 
   function init() {
-    document.querySelectorAll(".nav-item").forEach(function (b) {
-      b.addEventListener("click", function () { setView(b.getAttribute("data-view"), true); });
+    var tabs = Array.prototype.slice.call(document.querySelectorAll(".pestana"));
+    tabs.forEach(function (b, i) {
+      b.addEventListener("click", function () { setView(b.getAttribute("data-view")); });
+      // Arrow keys move between tabs (WAI-ARIA tabs pattern).
+      b.addEventListener("keydown", function (ev) {
+        var j = ev.key === "ArrowRight" ? i + 1 : ev.key === "ArrowLeft" ? i - 1 : ev.key === "Home" ? 0 : ev.key === "End" ? tabs.length - 1 : null;
+        if (j === null) return;
+        ev.preventDefault();
+        var t = tabs[(j + tabs.length) % tabs.length];
+        t.focus();
+        setView(t.getAttribute("data-view"));
+      });
     });
-    $("menu-toggle").addEventListener("click", function () {
-      var open = !$("sidebar").classList.contains("abierto");
-      $("sidebar").classList.toggle("abierto", open);
-      $("sidebar-overlay").hidden = !open;
-      $("menu-toggle").setAttribute("aria-expanded", String(open));
-    });
-    $("sidebar-overlay").addEventListener("click", closeMenu);
 
     $("form").addEventListener("submit", startRun);
     $("cancel").addEventListener("click", cancelRun);

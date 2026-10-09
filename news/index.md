@@ -14,9 +14,10 @@
   [`run_momst()`](https://jorgeklz.github.io/momst/reference/run_momst.md)
   exactly for the same seed, checked against the R package before every
   deployment. It works in any modern browser, Safari included.
-- The app follows the Universidad Técnica de Manabí visual identity:
-  green and gold palette, Inter and Playfair Display typography and the
-  UTM logo.
+- Both apps use the Universidad Técnica de Manabí green and gold
+  palette. The browser version is laid out as a testing page (parameters
+  beside tabbed results) and carries the author’s logo; the Shiny app
+  keeps the UTM logo.
 
 ## momst 0.1.1
 
