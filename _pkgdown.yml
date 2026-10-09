@@ -4,6 +4,15 @@ template:
   bootstrap: 5
   bootswatch: cosmo
 
+navbar:
+  structure:
+    left: [intro, reference, articles, app, news]
+  components:
+    app:
+      text: Web app
+      icon: fa-play
+      href: app/
+
 reference:
   - title: "Package overview"
     desc: "Welcome page and pointers to the rest of the documentation."
@@ -14,6 +23,11 @@ reference:
     desc: "Single entry point to run the NSGA-II based MO-MST solver."
     contents:
       - run_momst
+
+  - title: "Interactive app"
+    desc: "Shiny explorer for the solver, also available online at <https://jorgeklz.github.io/momst/app/>."
+    contents:
+      - run_app
 
   - title: "Instance and lookup"
     desc: "Generate random complete-graph instances and pre-compute edge-weight lookup tables."

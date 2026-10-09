@@ -1,3 +1,13 @@
+# momst (development version)
+
+* New `run_app()` launches an interactive Shiny explorer (`inst/app`) to
+  generate or upload instances, run and compare the four solver variants,
+  inspect and download Pareto fronts and draw any spanning tree on the front.
+  For two objectives it also reports the hypervolume of each variant.
+* The same app is published as a static shinylive page (R running in the
+  browser through webR) at <https://jorgeklz.github.io/momst/app/>, built by
+  the pkgdown workflow.
+
 # momst 0.1.1
 
 * **Breaking change**: all output column names are now in English to match the
