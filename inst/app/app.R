@@ -190,7 +190,7 @@ empty_state <- function(title, text) div(class = "vacio", tags$strong(title), te
 # --------------------------------------------------------------------- UI ---
 
 ui <- page_sidebar(
-  window_title = "momst · Universidad Técnica de Manabí",
+  window_title = "momst explorer",
   fillable = FALSE,
   theme = bs_theme(
     version = 5,
@@ -204,7 +204,7 @@ ui <- page_sidebar(
   sidebar = sidebar(
     width = 300, bg = "#ffffff", fg = "#17220f",
     div(class = "sidebar-logo",
-        tags$img(src = "utm-logo.png", alt = "Universidad Técnica de Manabí"),
+        tags$img(src = "utm-logo.png", alt = "Technical University of Manabi logo"),
         tags$h1("momst explorer"),
         tags$p("Multi-objective minimum spanning tree")),
     div(class = "seccion-nav", "Parameters"),
@@ -253,9 +253,10 @@ ui <- page_sidebar(
             "Larger graphs and the local search variants take longer,",
             "especially when the app runs inside the browser.")),
     div(class = "sidebar-pie",
-        "Parraga-Alava, Inostroza-Ponta and Dorn (2017). IEEE CEC, pp. 1818 to 1825.",
+        "Jorge Parraga-Alava, Ph.D",
         tags$br(),
-        tags$a(href = "https://github.com/jorgeklz/momst", target = "_blank", "github.com/jorgeklz/momst"))
+        tags$a(href = "https://doi.org/10.1109/CEC.2017.7969432", target = "_blank",
+               "doi:10.1109/CEC.2017.7969432"))
   ),
   tags$head(
     tags$link(rel = "preconnect", href = "https://fonts.googleapis.com"),
