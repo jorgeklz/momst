@@ -364,10 +364,10 @@ data.frame(
                             res_TS$elapsed), 2)
 )
 #>   variant elapsed_seconds
-#> 1    base            1.21
-#> 2      PR            3.73
-#> 3     PLS            3.62
-#> 4      TS            1.79
+#> 1    base            2.21
+#> 2      PR            7.53
+#> 3     PLS            6.97
+#> 4      TS            3.45
 ```
 
 These times are not benchmarks: they depend on the size of the instance,
