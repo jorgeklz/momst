@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 327.37 326.76">
+  <!-- Generator: Adobe Illustrator 30.7.0, SVG Export Plug-In . SVG Version: 2.1.4 Build 114)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #3f7767;
+      }
+
+      .st1, .st2 {
+        isolation: isolate;
+      }
+
+      .st3 {
+        fill: url(#Degradado_sin_nombre);
+      }
+
+      .st2 {
+        fill: #fff;
+        font-family: Montserrat-Bold, Montserrat;
+        font-size: 152.67px;
+        font-weight: 700;
+      }
+    </style>
+    <linearGradient id="Degradado_sin_nombre" data-name="Degradado sin nombre" x1="-723.73" y1="14.96" x2="-723.73" y2="20.05" gradientTransform="translate(46482.3804 -958) scale(64)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#18414a"/>
+      <stop offset="1" stop-color="#0e3444"/>
+    </linearGradient>
+  </defs>
+  <rect class="st3" x=".84" y="1" width="325.7" height="325.7" rx="85.84" ry="85.84"/>
+  <g class="st1">
+    <text class="st2" transform="translate(15.65 219.83)"><tspan x="0" y="0">JP</tspan></text>
+  </g>
+  <circle class="st0" cx="250.2" cy="72.25" r="21.37"/>
+  <g class="st1">
+    <text class="st2" transform="translate(310.57 115.2) rotate(-180)"><tspan x="0" y="0">V</tspan></text>
+  </g>
+</svg>

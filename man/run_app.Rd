@@ -21,8 +21,9 @@ or several solver variants, inspect and download the Pareto front, compare
 variants and draw any spanning tree of the front.
 }
 \details{
-The same application is published as a static web page (it runs R in the
-browser through webR) at \url{https://jorgeklz.github.io/momst/app/}.
+A browser version is published at \url{https://jorgeklz.github.io/momst/app/}.
+It is a JavaScript port of the solver that returns the same Pareto front as
+\code{\link{run_momst}} for the same instance, parameters and seed.
 }
 \examples{
 if (interactive()) {

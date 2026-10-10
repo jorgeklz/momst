@@ -37,11 +37,12 @@ a:hover { text-decoration: underline; }
   border-right: 1px solid var(--borde) !important; }
 .bslib-sidebar-layout > .sidebar > .sidebar-content { padding: 0 0 14px; gap: 0; }
 .bslib-sidebar-layout { --bslib-sidebar-main-bg: var(--bg); --_border: var(--borde); }
-.sidebar-logo { padding: 18px 16px 14px; border-bottom: 1px solid var(--borde); }
-.sidebar-logo img { width: 100%; max-width: 210px; height: auto; display: block; margin-bottom: 12px; }
-.sidebar-logo h1 { font-family: 'Playfair Display', serif; font-size: var(--fs-lg); color: var(--g1);
+.sidebar-logo { padding: 18px 16px 16px; background: linear-gradient(115deg, #0f3a0b 0%, #1a5a12 55%, var(--g1) 100%);
+  border-bottom: 3px solid var(--y3); }
+.sidebar-logo img { width: auto; height: 50px; max-width: 100%; display: block; margin-bottom: 12px; }
+.sidebar-logo h1 { font-family: 'Montserrat', 'Inter', system-ui, sans-serif; font-size: var(--fs-lg); color: #fff;
   line-height: 1.3; margin: 0; font-weight: 700; }
-.sidebar-logo p { font-size: var(--fs-xs); color: var(--texto3); margin: 3px 0 0; }
+.sidebar-logo p { font-size: var(--fs-xs); color: rgba(255, 255, 255, .78); margin: 3px 0 0; }
 .seccion-nav { font-size: var(--fs-micro); font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
   color: var(--texto3); padding: 16px 16px 6px; }
 .sidebar-acciones { padding: 14px 16px 0; display: grid; gap: 10px; }
@@ -209,3 +210,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .shiny-table th, .shiny-table td { padding: 8px !important; }
 }
 @media (max-width: 380px) { .kpis { grid-template-columns: 1fr; } }
+
+/* sidebar collapse toggle: white over the green brand block, dark when the sidebar is closed */
+.bslib-sidebar-layout .collapse-toggle { color: #fff; }
+.bslib-sidebar-layout.sidebar-collapsed .collapse-toggle { color: var(--texto2); }

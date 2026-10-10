@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>momst web app</title>
+  <meta name="description" content="Multi-objective minimum spanning tree solver (NSGA-II with Pareto local search) running in the browser.">
+  <link rel="icon" type="image/svg+xml" href="jpa-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap">
+  <link rel="stylesheet" href="estilos.css">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="barra-app">
+  <div class="barra-app-in">
+    <a class="marca-app" href="https://jorgeklz.github.io/research/" target="_blank" rel="noopener" aria-label="Jorge Parraga-Alava, research website">
+      <img src="jpa-logo-white.svg" alt="Jorge Parraga-Alava logo" class="logo-jpa"></a>
+    <div class="titulo-app">
+      <h1>momst <span>web app</span></h1>
+      <p>Try the R package in your browser: multi-objective minimum spanning trees with NSGA-II and Pareto local search.</p>
+    </div>
+    <nav class="enlaces-app" aria-label="Links">
+      <a href="../">Documentation</a>
+      <a href="../reference/run_momst.html">run_momst()</a>
+      <a href="https://github.com/jorgeklz/momst" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="espacio">
+  <aside class="columna-parametros" aria-label="Parameters">
+    <!-- Parameters -->
+    <section class="tarjeta parametros" aria-labelledby="t-param">
+      <div class="titulo-tarjeta" id="t-param">Parameters</div>
+      <form id="form" novalidate>
+        <div class="grupo">
+          <div class="grupo-titulo">Instance</div>
+          <div class="segmentado" role="radiogroup" aria-label="Instance source">
+            <label><input type="radio" name="inst_src" value="random" checked><span>Random</span></label>
+            <label><input type="radio" name="inst_src" value="upload"><span>Upload file</span></label>
+          </div>
+          <div class="campos" id="campos-random">
+            <div class="campo"><label for="n">Nodes (n)</label><input class="entrada" id="n" type="number" min="3" max="60" step="1" value="10"></div>
+            <div class="campo"><label for="num_obj">Objectives</label>
+              <select class="selector" id="num_obj"><option value="2" selected>2</option><option value="3">3</option></select></div>
+            <div class="campo"><label for="inst_seed">Instance seed</label><input class="entrada" id="inst_seed" type="number" step="1" value="12345"></div>
+            <div class="campo rango"><label>Weights, objective 1</label>
+              <div class="par"><input class="entrada" id="a_min" type="number" value="10" aria-label="Objective 1 minimum weight"><span>to</span><input class="entrada" id="a_max" type="number" value="100" aria-label="Objective 1 maximum weight"></div></div>
+            <div class="campo rango"><label>Weights, objective 2</label>
+              <div class="par"><input class="entrada" id="b_min" type="number" value="10" aria-label="Objective 2 minimum weight"><span>to</span><input class="entrada" id="b_max" type="number" value="50" aria-label="Objective 2 maximum weight"></div></div>
+            <div class="campo rango" id="campo-c"><label>Weights, objective 3</label>
+              <div class="par"><input class="entrada" id="c_min" type="number" value="30" aria-label="Objective 3 minimum weight"><span>to</span><input class="entrada" id="c_max" type="number" value="200" aria-label="Objective 3 maximum weight"></div></div>
+          </div>
+          <div class="campos" id="campos-upload" hidden>
+            <div class="campo ancho"><label for="inst_file">Edge list (.csv or .txt)</label>
+              <input class="entrada" id="inst_file" type="file" accept=".csv,.txt,text/csv,text/plain">
+              <p class="nota">Columns <code>from</code>, <code>to</code>, <code>weight_1</code>, <code>weight_2</code> and optionally <code>weight_3</code>, one row per edge of a complete graph with nodes 1 to n.</p>
+              <p class="nota" id="archivo-estado"></p></div>
+          </div>
+        </div>
+
+        <div class="grupo">
+          <div class="grupo-titulo">Solver</div>
+          <p class="nota chips-nota">Variants: NSGA-II alone or combined with a local search.</p>
+          <fieldset class="chips" aria-label="Variants">
+            <label class="chip"><input type="checkbox" name="variant" value="base" checked><span><i class="marca" data-v="base"></i>Base NSGA-II</span></label>
+            <label class="chip"><input type="checkbox" name="variant" value="PR"><span><i class="marca" data-v="PR"></i>Path Relinking</span></label>
+            <label class="chip"><input type="checkbox" name="variant" value="PLS"><span><i class="marca" data-v="PLS"></i>Pareto LS</span></label>
+            <label class="chip"><input type="checkbox" name="variant" value="TS"><span><i class="marca" data-v="TS"></i>Tabu Search</span></label>
+          </fieldset>
+          <div class="campos">
+            <div class="campo"><label for="iterations">Independent runs</label><input class="entrada" id="iterations" type="number" min="1" max="30" step="1" value="2"></div>
+            <div class="campo"><label for="pop_size">Population size (even)</label><input class="entrada" id="pop_size" type="number" min="4" max="200" step="2" value="30"></div>
+            <div class="campo"><label for="max_generations">Max generations</label><input class="entrada" id="max_generations" type="number" min="1" max="500" step="1" value="30"></div>
+            <div class="campo"><label for="seed">Solver seed</label><input class="entrada" id="seed" type="number" step="1" value="2026"></div>
+          </div>
+          <details class="avanzado">
+            <summary>NSGA-II parameters</summary>
+            <div class="campos">
+              <div class="campo"><label for="cross_rate">Crossover rate</label><input class="entrada" id="cross_rate" type="number" min="0" max="1" step="0.05" value="0.8"></div>
+              <div class="campo"><label for="mut_rate">Mutation rate</label><input class="entrada" id="mut_rate" type="number" min="0" max="1" step="0.01" value="0.05"></div>
+              <div class="campo"><label for="tour_size">Tournament size</label><input class="entrada" id="tour_size" type="number" min="2" max="10" step="1" value="2"></div>
+              <div class="campo"><label for="convergence_window">Convergence window</label><input class="entrada" id="convergence_window" type="number" min="2" max="100" step="1" value="10"></div>
+            </div>
+          </details>
+        </div>
+
+        <div class="acciones">
+          <button class="boton" id="run" type="submit">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>
+            Run solver</button>
+          <button class="boton secundario" id="cancel" type="button" hidden>Cancel</button>
+          <div class="estado" id="estado" aria-live="polite"></div>
+        </div>
+        <div class="barra-progreso" id="progreso" hidden><div style="width:0%"></div></div>
+        <div class="error" id="error" role="alert" hidden></div>
+      </form>
+    </section>
+
+  </aside>
+
+  <main class="columna-resultados">
+    <div class="cuadricula kpis" id="kpis"></div>
+
+    <div class="tarjeta resultados">
+    <div class="pestanas" role="tablist" aria-label="Results">
+      <button class="pestana activa" type="button" role="tab" data-view="front" aria-selected="true">Pareto front</button>
+      <button class="pestana" type="button" role="tab" data-view="tree" aria-selected="false">Spanning tree</button>
+      <button class="pestana" type="button" role="tab" data-view="solutions" aria-selected="false">Solutions</button>
+      <button class="pestana" type="button" role="tab" data-view="compare" aria-selected="false">Compare variants</button>
+      <button class="pestana" type="button" role="tab" data-view="instance" aria-selected="false">Instance</button>
+      <button class="pestana" type="button" role="tab" data-view="log" aria-selected="false">Run log</button>
+      <button class="pestana" type="button" role="tab" data-view="about" aria-selected="false">About</button>
+    </div>
+
+    <section class="vista" data-view="front" aria-label="Pareto front">
+      <div class="cabecera-vista">
+        <div class="titulo-tarjeta">Global Pareto front by variant</div>
+        <span class="nota">Click a point to draw its spanning tree.</span>
+      </div>
+      <div id="front"></div>
+    </section>
+
+    <section class="vista" data-view="tree" hidden aria-label="Spanning tree">
+      <div class="dos-columnas">
+        <div class="panel-lateral">
+          <div class="titulo-tarjeta">Solution</div>
+          <div class="campo"><label for="tree_variant">Variant</label><select class="selector" id="tree_variant"></select></div>
+          <div class="opciones" role="radiogroup" aria-label="Solution">
+            <label><input type="radio" name="tree_pick" value="sum" checked> Best compromise (min. sum)</label>
+            <label><input type="radio" name="tree_pick" value="norm"> Best compromise (min. normalised sum)</label>
+            <label><input type="radio" name="tree_pick" value="row"> Choose by row</label>
+          </div>
+          <div class="campo" id="campo-fila" hidden><label for="tree_row">Row of the Pareto table</label>
+            <input class="entrada" id="tree_row" type="number" min="1" step="1" value="1"></div>
+          <label class="casilla"><input type="checkbox" id="show_weights" checked> Show edge weights on the plot</label>
+          <div class="titulo-tarjeta mt">Edges</div>
+          <div id="tree_edges"></div>
+        </div>
+        <div>
+          <div class="titulo-grafico" id="tree_title"></div>
+          <div id="tree"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="vista" data-view="solutions" hidden aria-label="Pareto solutions">
+      <div class="cabecera-vista">
+        <div class="titulo-tarjeta">Pareto solutions</div>
+        <span class="controles-panel">
+          <select class="selector" id="table_variant" aria-label="Variant"></select>
+          <button class="boton secundario pequeno" id="dl_front" type="button">Download CSV</button>
+        </span>
+      </div>
+      <div id="front_table"></div>
+    </section>
+
+    <section class="vista" data-view="compare" hidden aria-label="Variant comparison">
+      <div class="titulo-tarjeta">Summary</div>
+      <div id="compare_table"></div>
+      <p class="nota" id="hv_note">Hypervolume (2 objectives only) uses a common reference point set 10% beyond the worst value observed across all variants. Higher is better.</p>
+      <div class="titulo-tarjeta mt">Runtime per variant (seconds)</div>
+      <div id="time_plot"></div>
+    </section>
+
+    <section class="vista" data-view="instance" hidden aria-label="Instance">
+      <div class="cabecera-vista">
+        <div class="titulo-tarjeta" id="inst_title">Instance</div>
+        <span class="controles-panel"><button class="boton secundario pequeno" id="dl_inst" type="button">Download instance</button></span>
+      </div>
+      <div id="inst_table"></div>
+    </section>
+
+    <section class="vista" data-view="log" hidden aria-label="Run log">
+      <div class="titulo-tarjeta">Run log</div>
+      <pre class="registro" id="log">Press Run solver to start.</pre>
+    </section>
+
+    <section class="vista acerca" data-view="about" hidden aria-label="About">
+      <h3>What it does</h3>
+      <p><strong>momst</strong> solves the Multi-Criteria Minimum Spanning Tree problem on complete weighted graphs with NSGA-II,
+        optionally combined with one of three Pareto local search operators. Chromosomes are Prufer sequences, so every
+        individual decodes to a valid spanning tree.</p>
+      <table class="tabla compacta">
+        <thead><tr><th>Variant</th><th>Local search</th></tr></thead>
+        <tbody>
+          <tr><td><code>base</code></td><td>None (pure NSGA-II)</td></tr>
+          <tr><td><code>PR</code></td><td>Path Relinking</td></tr>
+          <tr><td><code>PLS</code></td><td>Pareto Local Search</td></tr>
+          <tr><td><code>TS</code></td><td>Tabu Search</td></tr>
+        </tbody>
+      </table>
+      <h3>How this page works</h3>
+      <p>This page runs a JavaScript port of the R package, including R's random number generator. With the same instance,
+        parameters and seed it returns the same Pareto front as the R package, which is checked automatically on every
+        deployment.</p>
+      <h3>The same analysis in R</h3>
+<pre><code>library(momst)
+inst &lt;- generate_instance(n = 10, num_obj = 2, seed = 12345)
+res  &lt;- run_momst(instance = inst, n = 10, num_obj = 2, variant = "PLS",
+                  iterations = 2, pop_size = 30, max_generations = 30,
+                  seed = 2026, verbose = FALSE)
+plot_pareto_front(res)
+
+# Or the interactive app, locally
+momst::run_app()</code></pre>
+      <h3>Reference</h3>
+      <p>Parraga-Alava, J., Inostroza-Ponta, M. and Dorn, M. (2017). <em>Using local search strategies to improve the
+        performance of NSGA-II for the Multi-Criteria Minimum Spanning Tree problem.</em> IEEE CEC 2017, pp. 1818 to 1825.
+        <a href="https://doi.org/10.1109/CEC.2017.7969432" target="_blank" rel="noopener">doi:10.1109/CEC.2017.7969432</a></p>
+      <p>Documentation: <a href="../">jorgeklz.github.io/momst</a> · Source code:
+        <a href="https://github.com/jorgeklz/momst" target="_blank" rel="noopener">github.com/jorgeklz/momst</a></p>
+    </section>
+
+    </div>
+  </main>
+</div>
+
+<footer class="pie-app">
+  <span>Jorge Parraga-Alava, Ph.D</span>
+  <a href="https://doi.org/10.1109/CEC.2017.7969432" target="_blank" rel="noopener">doi:10.1109/CEC.2017.7969432</a>
+</footer>
+
+<div class="tooltip-grafico" id="tooltip" role="tooltip" hidden></div>
+<script src="momst.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
